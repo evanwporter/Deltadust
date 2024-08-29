@@ -26,21 +26,16 @@ namespace MyGame {
 
         private AnimatedSprite _currentAnimation;
 
-        private Inventory _inventory;
+        private readonly Inventory _inventory;
         private bool _showInventory;
-        private string _inventoryFilePath;
+        private readonly string _inventoryFilePath;
 
         private KeyboardState _previousKeyboardState;
 
-        private TiledMap _tiledMap;
-        private Vector2 vector2;
-        private float v1;
-        private string v2;
-        private TiledMapTileLayer collisionLayer;
-        private readonly TiledMapTileLayer _collisionLayer;
+        private readonly World _world;
         private readonly int hitboxWidth = 20;
 
-        public Player(Vector2 startPosition, float speed, string inventoryFilePath, TiledMapTileLayer collisionLayer, TiledMap tiledMap)
+        public Player(Vector2 startPosition, float speed, string inventoryFilePath, World world)
             // : base(startPosition, speed)
         {
             _position = startPosition;
@@ -51,17 +46,7 @@ namespace MyGame {
             _showInventory = false;
 
             _previousKeyboardState = Keyboard.GetState();
-            _collisionLayer = collisionLayer;
-
-            _tiledMap = tiledMap;
-        }
-
-        public Player(Vector2 vector2, float v1, string v2, TiledMapTileLayer collisionLayer)
-        {
-            this.vector2 = vector2;
-            this.v1 = v1;
-            this.v2 = v2;
-            this.collisionLayer = collisionLayer;
+            _world = world;
         }
 
         public override void LoadContent(AsepriteFile aseFile, GraphicsDevice graphicsDevice) {
@@ -132,18 +117,24 @@ namespace MyGame {
                 isMoving = true;
             }
 
-            Vector2 newPosition = Position + movement;
+            Vector2 newPosition = Position + new Vector2(movement.X, 0);
+            Rectangle playerHitbox = GetHitbox(newPosition);
+            if (!_world.IsCollidingWithTile(playerHitbox))
+            {
+                _position.X = newPosition.X;
+            }
 
-            Rectangle playerHitbox = new Rectangle(
-                (int)newPosition.X,
-                (int)newPosition.Y,
-                hitboxWidth,
-                hitboxWidth
-            );
+            newPosition = Position + new Vector2(0, movement.Y);
+            playerHitbox = GetHitbox(newPosition);
+            if (!_world.IsCollidingWithTile(playerHitbox))
+            {
+                _position.Y = newPosition.Y;
+            }
+
 
             if (isMoving)
             {
-                if (!IsCollidingWithTile(playerHitbox))
+                if (!_world.IsCollidingWithTile(playerHitbox))
                 {
                     _position = newPosition;
                 }
@@ -174,34 +165,14 @@ namespace MyGame {
             }
         }
 
-        private bool IsCollidingWithTile(Rectangle playerRectangle) {
-            
-            int tileWidth = _tiledMap.TileWidth;
-            int tileHeight = _tiledMap.TileHeight;
-
-            var corners = new List<Vector2> {
-                new Vector2(playerRectangle.Left, playerRectangle.Top),      // Top-left
-                new Vector2(playerRectangle.Right, playerRectangle.Top),     // Top-right
-                new Vector2(playerRectangle.Left, playerRectangle.Bottom),   // Bottom-left
-                new Vector2(playerRectangle.Right, playerRectangle.Bottom)   // Bottom-right
-            };
-
-            foreach (var corner in corners)
-            {
-                ushort tileX = (ushort)(corner.X / tileWidth);
-                ushort tileY = (ushort)(corner.Y / tileHeight);
-
-                if (tileX < _collisionLayer.Width && tileY < _collisionLayer.Height)
-                {
-                    var tile = _collisionLayer.GetTile(tileX, tileY);
-                    if (tile.GlobalIdentifier != 0)
-                    {
-                        return true;
-                    }
-                }
-            }
-
-            return false;
+        private Rectangle GetHitbox(Vector2 position)
+        {
+            return new Rectangle(
+                (int)(position.X + ((32 - hitboxWidth) / 2)), // Top-left X position of the hitbox
+                (int)(position.Y + 32 + 32 - 20), // Top-left Y position of the hitbox
+                hitboxWidth,
+                20
+            );
         }
 
         public override void Draw(SpriteBatch spriteBatch, SpriteFont font, Matrix viewMatrix)
@@ -212,23 +183,13 @@ namespace MyGame {
             // Draw inventory if it's shown
             if (_showInventory)
             {
-                DrawInventory(spriteBatch, font, viewMatrix);
+                _inventory.Draw(spriteBatch, font, viewMatrix);
             }
-        }
 
-        private void DrawInventory(SpriteBatch spriteBatch, SpriteFont font, Matrix viewMatrix)
-        {
-            // Draw the inventory relative to the camera position (top-left corner of the screen)
-            Vector2 position = Vector2.Transform(new Vector2(10, 10), Matrix.Invert(viewMatrix));
+            Texture2D hitboxTexture = new(spriteBatch.GraphicsDevice, 1, 1);
+            hitboxTexture.SetData(new[] { Color.Red });
 
-            spriteBatch.DrawString(font, "Inventory:", position, Color.White);
-            position.Y += 30;
-
-            foreach (string item in _inventory.Items)
-            {
-                spriteBatch.DrawString(font, item, position, Color.White);
-                position.Y += 30;
-            }
+            spriteBatch.Draw(hitboxTexture, GetHitbox(_position), Color.Red * 0.5f);
         }
 
         public Vector2 Position => _position;

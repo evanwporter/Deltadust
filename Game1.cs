@@ -16,14 +16,13 @@ namespace MyGame {
         private GraphicsDeviceManager _graphics;
         private SpriteBatch _spriteBatch;
 
-        private TiledMap _tiledMap;
-        private TiledMapRenderer _tiledMapRenderer;
-        private TiledMapTileLayer _collisionLayer;
-
         private Camera _camera;
         private SpriteFont _font;
 
         private Player _player;
+
+        private World _world;
+
 
         public Game1() {
             _graphics = new GraphicsDeviceManager(this);
@@ -43,30 +42,27 @@ namespace MyGame {
 
             _font = Content.Load<SpriteFont>("Fonts/ArialFont");
 
-            // Load the Tiled map
-            _tiledMap = Content.Load<TiledMap>("Map/starter_island");
-            _tiledMapRenderer = new TiledMapRenderer(GraphicsDevice, _tiledMap);
+            TiledMap tiledMap = Content.Load<TiledMap>("Map/starter_island");
+            _world = new World(tiledMap, GraphicsDevice);
 
-            _collisionLayer = _tiledMap.GetLayer<TiledMapTileLayer>("Collisions");
+            // Create the player and pass the world instance
+            _player = new Player(
+                new Vector2(100, 100), 
+                100f, 
+                Path.Combine(Content.RootDirectory, "inventory.xml"),
+                _world
+            );
+
 
             _player = new Player(
                 new Vector2(GraphicsDevice.Viewport.Width / 2, GraphicsDevice.Viewport.Height / 2),
                 100f,
                 Path.Combine(Content.RootDirectory, "inventory.xml"),
-                _collisionLayer,
-                _tiledMap
+                _world
             );
 
             AsepriteFile aseFile = Content.Load<AsepriteFile>("Character/character");
             _player.LoadContent(aseFile, GraphicsDevice);
-
-            #if DEBUG
-            if (_collisionLayer == null) {
-                System.Diagnostics.Debug.WriteLine("Collision tile layer not found!");
-            }
-            #endif
-
-            _collisionLayer.IsVisible = false;
         }
 
         protected override void Update(GameTime gameTime) {
@@ -78,7 +74,7 @@ namespace MyGame {
             // Update the camera position to follow the player
             _camera.Position = _player.Position - new Vector2(GraphicsDevice.Viewport.Width / 2, GraphicsDevice.Viewport.Height / 2) / _camera.Zoom;
 
-            _tiledMapRenderer.Update(gameTime);
+            _world.Update(gameTime);
 
             base.Update(gameTime);
         }
@@ -89,9 +85,9 @@ namespace MyGame {
             // Apply camera transformation
             Matrix viewMatrix = _camera.GetViewMatrix();
 
-            _tiledMapRenderer.Draw(viewMatrix);
-
             _spriteBatch.Begin(transformMatrix: viewMatrix, samplerState: SamplerState.PointClamp);
+
+            _world.Draw(_spriteBatch, viewMatrix);
 
             _player.Draw(_spriteBatch, _font, viewMatrix);
 
