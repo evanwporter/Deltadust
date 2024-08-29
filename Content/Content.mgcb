@@ -79,3 +79,15 @@
 /processor:TiledMapProcessor
 /build:Map/starter_island.tmx
 
+#begin Menus/MenuTiles.aseprite
+/importer:AsepriteFileContentImporter
+/processor:AsepriteFileContentProcessor
+/processorParam:PremultiplyAlpha=True
+/build:Menus/MenuTiles.aseprite
+
+#begin Monsters/Slime.aseprite
+/importer:AsepriteFileContentImporter
+/processor:AsepriteFileContentProcessor
+/processorParam:PremultiplyAlpha=True
+/build:Monsters/Slime.aseprite
+

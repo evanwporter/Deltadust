@@ -53,3 +53,5 @@ c:\Users\evanw\MyGame\bin\Debug\net8.0\MonoGame.Aseprite.dll
 C:\Users\evanw\MyGame\bin\Debug\net8.0\Content\Character\character.xnb
 c:\Users\evanw\MyGame\bin\Debug\net8.0\Content\Fonts\ArialFont.xnb
 c:\Users\evanw\MyGame\obj\Debug\net8.0\MyGame.sourcelink.json
+c:\Users\evanw\MyGame\bin\Debug\net8.0\Content\Menus\MenuTiles.xnb
+c:\Users\evanw\MyGame\bin\Debug\net8.0\Content\Monsters\Slime.xnb

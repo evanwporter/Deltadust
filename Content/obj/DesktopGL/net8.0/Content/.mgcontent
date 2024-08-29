@@ -16,8 +16,12 @@
     <File>C:/Users/evanw/MyGame/Content/Map/LightShadow_pipo.tsx</File>
     <File>C:/Users/evanw/MyGame/Content/Map/samplemap.tmx</File>
     <File>C:/Users/evanw/MyGame/Content/Map/starter_island.tmx</File>
+    <File>C:/Users/evanw/MyGame/Content/Menus/MenuTiles.aseprite</File>
+    <File>C:/Users/evanw/MyGame/Content/Monsters/Slime.aseprite</File>
   </SourceFiles>
   <DestFiles>
+    <File xsi:nil="true" />
+    <File xsi:nil="true" />
     <File xsi:nil="true" />
     <File xsi:nil="true" />
     <File xsi:nil="true" />

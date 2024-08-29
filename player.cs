@@ -12,11 +12,6 @@ using AsepriteDotNet.Aseprite;
 using AsepriteDotNet.IO;
 using MonoGame.Aseprite;
 
-
-using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
-using Microsoft.Xna.Framework.Input;
-
 namespace MyGame {
     public class Player
     {

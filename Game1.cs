@@ -1,104 +1,124 @@
 ﻿using System;
-using System.IO;
 using System.Collections.Generic;
-
+using System.Linq;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
-
 using MonoGame.Extended.Tiled;
 using MonoGame.Extended.Tiled.Renderers;
 using AsepriteDotNet.Aseprite;
 using AsepriteDotNet.IO;
 using MonoGame.Aseprite;
 
-
 namespace MyGame {
-    public class Game1 : Game {
+    public class Game1 : Game
+    {
         private GraphicsDeviceManager _graphics;
         private SpriteBatch _spriteBatch;
+        private EntityManager _entityManager;
+        private List<System> _systems;
 
         private TiledMap _tiledMap;
         private TiledMapRenderer _tiledMapRenderer;
-        private TiledMapTileLayer _collisionLayer;
-
         private Camera _camera;
-        private SpriteFont _font;
 
-        private Player _player;
-
-        public Game1() {
+        public Game1()
+        {
             _graphics = new GraphicsDeviceManager(this);
             Content.RootDirectory = "Content";
             IsMouseVisible = true;
-            Window.AllowUserResizing = true;
         }
 
-        protected override void Initialize() {
-            _player = new Player(
-                new Vector2(GraphicsDevice.Viewport.Width / 2, GraphicsDevice.Viewport.Height / 2),
-                100f,
-                Path.Combine(Content.RootDirectory, "inventory.xml")
-            );
-
-            _camera = new Camera(GraphicsDevice.Viewport);
+        protected override void Initialize()
+        {
+            _entityManager = new EntityManager();
+            _systems = new List<System>();
 
             base.Initialize();
         }
 
-        protected override void LoadContent() {
+        protected override void LoadContent()
+        {
             _spriteBatch = new SpriteBatch(GraphicsDevice);
-
-            _font = Content.Load<SpriteFont>("Fonts/ArialFont");
 
             // Load the Tiled map
             _tiledMap = Content.Load<TiledMap>("Map/starter_island");
             _tiledMapRenderer = new TiledMapRenderer(GraphicsDevice, _tiledMap);
 
-            // Load player content
-            AsepriteFile aseFile = Content.Load<AsepriteFile>("Character/character");
-            _player.LoadContent(aseFile, GraphicsDevice);
+            // Initialize the camera
+            _camera = new Camera(GraphicsDevice.Viewport) 
+            {
+                Zoom = 1.0f
+            };
 
-            _collisionLayer = _tiledMap.GetLayer<TiledMapTileLayer>("Collisions");
+            // Load the Slime sprite from Aseprite
+            AsepriteFile aseFile = Content.Load<AsepriteFile>("Monsters/Slime");
+            SpriteSheet slimeSpriteSheet = aseFile.CreateSpriteSheet(GraphicsDevice);
+            AnimatedSprite slimeSprite = slimeSpriteSheet.CreateAnimatedSprite("Jump");
 
-            #if DEBUG
-            if (_collisionLayer == null) {
-                System.Diagnostics.Debug.WriteLine("Collision tile layer not found!");
-            }
-            #endif
+            // Create Slime entities
+            var slime = _entityManager.CreateEntity();
+            _entityManager.AddComponent(slime, new TransformComponent(new Vector2(100, 100)));
+            _entityManager.AddComponent(slime, new RenderComponent(slimeSprite));
 
-            _collisionLayer.IsVisible = false;
+            // Add systems
+            _systems.Add(new MovementSystem(_entityManager));
+            _systems.Add(new RenderSystem(_spriteBatch, _entityManager));
         }
 
-        protected override void Update(GameTime gameTime) {
+        protected override void Update(GameTime gameTime)
+        {
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
                 Exit();
 
-            _player.Update(gameTime);
+            // Logic to update the game, including movement and game state, but NOT rendering
+            foreach (var system in _systems)
+            {
+                // Call non-rendering systems here, like MovementSystem
+                if (!(system is RenderSystem))
+                {
+                    system.Update(gameTime, _entityManager.GetEntitiesWithComponents(typeof(TransformComponent), typeof(RenderComponent)));
+                }
+            }
 
-            // Update the camera position to follow the player
-            _camera.Position = _player.Position - new Vector2(GraphicsDevice.Viewport.Width / 2, GraphicsDevice.Viewport.Height / 2) / _camera.Zoom;
-
-            _tiledMapRenderer.Update(gameTime);
+            // Update the camera to follow the player or any target
+            var firstEntity = _entityManager.GetEntitiesWithComponent<TransformComponent>().FirstOrDefault();
+            if (firstEntity != null)
+            {
+                _camera.Position = _entityManager.GetComponent<TransformComponent>(firstEntity).Position;
+            }
 
             base.Update(gameTime);
         }
 
-        protected override void Draw(GameTime gameTime) {
+        protected override void Draw(GameTime gameTime)
+        {
             GraphicsDevice.Clear(Color.CornflowerBlue);
 
-            // Apply camera transformation
+            // Apply the camera transformation
             Matrix viewMatrix = _camera.GetViewMatrix();
 
+            // Begin the sprite batch with the camera view matrix
+            _spriteBatch.Begin(transformMatrix: viewMatrix);
+
+            // Draw the Tiled map
             _tiledMapRenderer.Draw(viewMatrix);
 
-            _spriteBatch.Begin(transformMatrix: viewMatrix, samplerState: SamplerState.PointClamp);
+            // Call the render system to draw all entities (this includes any system that deals with drawing)
+            foreach (var system in _systems)
+            {
+                if (system is RenderSystem)
+                {
+                    system.Update(gameTime, _entityManager.GetEntitiesWithComponents(typeof(TransformComponent), typeof(RenderComponent)));
+                }
+            }
 
-            _player.Draw(_spriteBatch, _font, viewMatrix);
-
+            // End the sprite batch after all drawing is done
             _spriteBatch.End();
 
             base.Draw(gameTime);
         }
+
+
     }
 }
