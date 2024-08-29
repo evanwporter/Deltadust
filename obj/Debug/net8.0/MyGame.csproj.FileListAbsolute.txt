@@ -52,3 +52,4 @@ c:\Users\evanw\MyGame\bin\Debug\net8.0\AsepriteDotNet.dll
 c:\Users\evanw\MyGame\bin\Debug\net8.0\MonoGame.Aseprite.dll
 C:\Users\evanw\MyGame\bin\Debug\net8.0\Content\Character\character.xnb
 c:\Users\evanw\MyGame\bin\Debug\net8.0\Content\Fonts\ArialFont.xnb
+c:\Users\evanw\MyGame\obj\Debug\net8.0\MyGame.sourcelink.json
