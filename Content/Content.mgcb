@@ -79,3 +79,9 @@
 /processor:TiledMapProcessor
 /build:Map/starter_island.tmx
 
+#begin Monsters/slime.aseprite
+/importer:AsepriteFileContentImporter
+/processor:AsepriteFileContentProcessor
+/processorParam:PremultiplyAlpha=True
+/build:Monsters/slime.aseprite
+

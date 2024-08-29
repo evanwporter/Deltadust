@@ -20,9 +20,9 @@ namespace MyGame {
         private SpriteFont _font;
 
         private Player _player;
+        private Slime _slimeMonster;
 
         private World _world;
-
 
         public Game1() {
             _graphics = new GraphicsDeviceManager(this);
@@ -45,24 +45,19 @@ namespace MyGame {
             TiledMap tiledMap = Content.Load<TiledMap>("Map/starter_island");
             _world = new World(tiledMap, GraphicsDevice);
 
-            // Create the player and pass the world instance
             _player = new Player(
-                new Vector2(100, 100), 
+                new Vector2(300, 300), 
                 100f, 
-                Path.Combine(Content.RootDirectory, "inventory.xml"),
-                _world
-            );
-
-
-            _player = new Player(
-                new Vector2(GraphicsDevice.Viewport.Width / 2, GraphicsDevice.Viewport.Height / 2),
-                100f,
                 Path.Combine(Content.RootDirectory, "inventory.xml"),
                 _world
             );
 
             AsepriteFile aseFile = Content.Load<AsepriteFile>("Character/character");
             _player.LoadContent(aseFile, GraphicsDevice);
+
+            _slimeMonster = new Slime(new Vector2(200, 200), 25f, _world);
+            AsepriteFile slimeAseFile = Content.Load<AsepriteFile>("Monsters/slime");
+            _slimeMonster.LoadContent(slimeAseFile, GraphicsDevice);
         }
 
         protected override void Update(GameTime gameTime) {
@@ -90,6 +85,8 @@ namespace MyGame {
             _world.Draw(_spriteBatch, viewMatrix);
 
             _player.Draw(_spriteBatch, _font, viewMatrix);
+
+            _slimeMonster.Draw(_spriteBatch, _font, viewMatrix);
 
             _spriteBatch.End();
 
