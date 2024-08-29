@@ -1,24 +1,18 @@
-using System;
-using System.IO;
-using System.Collections.Generic;
+using System.Collections.Generic; // This namespace is needed for List<>
 
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+
+using AsepriteDotNet.Aseprite;
+using MonoGame.Aseprite;
 
 using MonoGame.Extended.Tiled;
 using MonoGame.Extended.Tiled.Renderers;
-using AsepriteDotNet.Aseprite;
-using AsepriteDotNet.IO;
-using MonoGame.Aseprite;
 
-
-using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
-using Microsoft.Xna.Framework.Input;
 
 namespace MyGame {
-    public class Player
+    public class Player : Entity
     {
         private Vector2 _position;
         private readonly float _speed;
@@ -38,7 +32,16 @@ namespace MyGame {
 
         private KeyboardState _previousKeyboardState;
 
-        public Player(Vector2 startPosition, float speed, string inventoryFilePath)
+        private TiledMap _tiledMap;
+        private Vector2 vector2;
+        private float v1;
+        private string v2;
+        private TiledMapTileLayer collisionLayer;
+        private readonly TiledMapTileLayer _collisionLayer;
+        private readonly int hitboxWidth = 20;
+
+        public Player(Vector2 startPosition, float speed, string inventoryFilePath, TiledMapTileLayer collisionLayer, TiledMap tiledMap)
+            // : base(startPosition, speed)
         {
             _position = startPosition;
             _speed = speed;
@@ -48,10 +51,21 @@ namespace MyGame {
             _showInventory = false;
 
             _previousKeyboardState = Keyboard.GetState();
+            _collisionLayer = collisionLayer;
+
+            _tiledMap = tiledMap;
         }
 
-        public void LoadContent(AsepriteFile aseFile, GraphicsDevice graphicsDevice)
+        public Player(Vector2 vector2, float v1, string v2, TiledMapTileLayer collisionLayer)
         {
+            this.vector2 = vector2;
+            this.v1 = v1;
+            this.v2 = v2;
+            this.collisionLayer = collisionLayer;
+        }
+
+        public override void LoadContent(AsepriteFile aseFile, GraphicsDevice graphicsDevice) {
+            
             SpriteSheet spriteSheet = aseFile.CreateSpriteSheet(graphicsDevice);
 
             // Running animations
@@ -67,13 +81,11 @@ namespace MyGame {
             _currentAnimation = _runForwardCycle;
         }
 
-        public void Update(GameTime gameTime)
-        {
+        public override void Update(GameTime gameTime) {
             var keyboardState = Keyboard.GetState();
 
             // Toggle inventory on/off
-            if (keyboardState.IsKeyDown(Keys.E) && !_previousKeyboardState.IsKeyDown(Keys.E))
-            {
+            if (keyboardState.IsKeyDown(Keys.E) && !_previousKeyboardState.IsKeyDown(Keys.E)) {
                 _showInventory = !_showInventory;
             }
 
@@ -89,38 +101,52 @@ namespace MyGame {
         private void HandleMovement(GameTime gameTime, KeyboardState keyboardState)
         {
             bool isMoving = false;
+            Vector2 movement = Vector2.Zero;
 
             if (keyboardState.IsKeyDown(Keys.W) || keyboardState.IsKeyDown(Keys.Up))
             {
-                _position.Y -= _speed * (float)gameTime.ElapsedGameTime.TotalSeconds;
+                movement.Y -= _speed * (float)gameTime.ElapsedGameTime.TotalSeconds;
                 _currentAnimation = _runBackwardCycle;
                 _currentAnimation.FlipHorizontally = false;
                 isMoving = true;
             }
             if (keyboardState.IsKeyDown(Keys.S) || keyboardState.IsKeyDown(Keys.Down))
             {
-                _position.Y += _speed * (float)gameTime.ElapsedGameTime.TotalSeconds;
+                movement.Y += _speed * (float)gameTime.ElapsedGameTime.TotalSeconds;
                 _currentAnimation = _runForwardCycle;
                 _currentAnimation.FlipHorizontally = false;
                 isMoving = true;
             }
             if (keyboardState.IsKeyDown(Keys.A) || keyboardState.IsKeyDown(Keys.Left))
             {
-                _position.X -= _speed * (float)gameTime.ElapsedGameTime.TotalSeconds;
+                movement.X -= _speed * (float)gameTime.ElapsedGameTime.TotalSeconds;
                 _currentAnimation = _runRightCycle;
                 _currentAnimation.FlipHorizontally = true;
                 isMoving = true;
             }
             if (keyboardState.IsKeyDown(Keys.D) || keyboardState.IsKeyDown(Keys.Right))
             {
-                _position.X += _speed * (float)gameTime.ElapsedGameTime.TotalSeconds;
+                movement.X += _speed * (float)gameTime.ElapsedGameTime.TotalSeconds;
                 _currentAnimation = _runRightCycle;
                 _currentAnimation.FlipHorizontally = false;
                 isMoving = true;
             }
 
+            Vector2 newPosition = Position + movement;
+
+            Rectangle playerHitbox = new Rectangle(
+                (int)newPosition.X,
+                (int)newPosition.Y,
+                hitboxWidth,
+                hitboxWidth
+            );
+
             if (isMoving)
             {
+                if (!IsCollidingWithTile(playerHitbox))
+                {
+                    _position = newPosition;
+                }
                 _currentAnimation.Play();
                 _currentAnimation.Update(gameTime);
             }
@@ -148,7 +174,37 @@ namespace MyGame {
             }
         }
 
-        public void Draw(SpriteBatch spriteBatch, SpriteFont font, Matrix viewMatrix)
+        private bool IsCollidingWithTile(Rectangle playerRectangle) {
+            
+            int tileWidth = _tiledMap.TileWidth;
+            int tileHeight = _tiledMap.TileHeight;
+
+            var corners = new List<Vector2> {
+                new Vector2(playerRectangle.Left, playerRectangle.Top),      // Top-left
+                new Vector2(playerRectangle.Right, playerRectangle.Top),     // Top-right
+                new Vector2(playerRectangle.Left, playerRectangle.Bottom),   // Bottom-left
+                new Vector2(playerRectangle.Right, playerRectangle.Bottom)   // Bottom-right
+            };
+
+            foreach (var corner in corners)
+            {
+                ushort tileX = (ushort)(corner.X / tileWidth);
+                ushort tileY = (ushort)(corner.Y / tileHeight);
+
+                if (tileX < _collisionLayer.Width && tileY < _collisionLayer.Height)
+                {
+                    var tile = _collisionLayer.GetTile(tileX, tileY);
+                    if (tile.GlobalIdentifier != 0)
+                    {
+                        return true;
+                    }
+                }
+            }
+
+            return false;
+        }
+
+        public override void Draw(SpriteBatch spriteBatch, SpriteFont font, Matrix viewMatrix)
         {
             // Draw player
             spriteBatch.Draw(_currentAnimation, _position);

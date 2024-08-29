@@ -1,11 +1,9 @@
 ﻿using System;
 using System.IO;
 using System.Collections.Generic;
-
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
-
 using MonoGame.Extended.Tiled;
 using MonoGame.Extended.Tiled.Renderers;
 using AsepriteDotNet.Aseprite;
@@ -35,12 +33,6 @@ namespace MyGame {
         }
 
         protected override void Initialize() {
-            _player = new Player(
-                new Vector2(GraphicsDevice.Viewport.Width / 2, GraphicsDevice.Viewport.Height / 2),
-                100f,
-                Path.Combine(Content.RootDirectory, "inventory.xml")
-            );
-
             _camera = new Camera(GraphicsDevice.Viewport);
 
             base.Initialize();
@@ -55,11 +47,18 @@ namespace MyGame {
             _tiledMap = Content.Load<TiledMap>("Map/starter_island");
             _tiledMapRenderer = new TiledMapRenderer(GraphicsDevice, _tiledMap);
 
-            // Load player content
+            _collisionLayer = _tiledMap.GetLayer<TiledMapTileLayer>("Collisions");
+
+            _player = new Player(
+                new Vector2(GraphicsDevice.Viewport.Width / 2, GraphicsDevice.Viewport.Height / 2),
+                100f,
+                Path.Combine(Content.RootDirectory, "inventory.xml"),
+                _collisionLayer,
+                _tiledMap
+            );
+
             AsepriteFile aseFile = Content.Load<AsepriteFile>("Character/character");
             _player.LoadContent(aseFile, GraphicsDevice);
-
-            _collisionLayer = _tiledMap.GetLayer<TiledMapTileLayer>("Collisions");
 
             #if DEBUG
             if (_collisionLayer == null) {
