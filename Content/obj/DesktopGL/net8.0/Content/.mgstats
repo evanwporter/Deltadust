@@ -1,0 +1,6 @@
+Source File,Dest File,Processor Type,Content Type,Source File Size,Dest File Size,Build Seconds
+"C:/Users/evanw/MyGame/Content/Character/character.aseprite","C:/Users/evanw/MyGame/Content/bin/DesktopGL/Content/Character/character.xnb","AsepriteFileContentProcessor","AsepriteFileProcessResult",7007,7131,0.1385155
+"C:/Users/evanw/MyGame/Content/Fonts/ArialFont.png","C:/Users/evanw/MyGame/Content/bin/DesktopGL/Content/Fonts/ArialFont.xnb","FontTextureProcessor","SpriteFontContent",24347,160802,0.1248673
+"C:/Users/evanw/MyGame/Content/Map/barrier.tsx","C:/Users/evanw/MyGame/Content/bin/DesktopGL/Content/Map/barrier_0.xnb","TiledMapTilesetProcessor","TiledMapTilesetContentItem",230,183,0.2118426
+"C:/Users/evanw/MyGame/Content/Map/fall_beach.png","C:/Users/evanw/MyGame/Content/bin/DesktopGL/Content/Map/fall_beach_0.xnb","TextureProcessor","Texture2DContent",92349,539733,0.1413795
+"C:/Users/evanw/MyGame/Content/Map/starter_island.tmx","C:/Users/evanw/MyGame/Content/bin/DesktopGL/Content/Map/starter_island.xnb","TiledMapProcessor","TiledMapContentItem",2063,1581,0.2364346

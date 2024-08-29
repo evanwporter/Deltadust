@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PipelineBuildEvent xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  <SourceFile>C:/Users/evanw/MyGame/Content/Map/starter_island.tmx</SourceFile>
+  <SourceTime>2024-08-25T18:16:42.9608936-07:00</SourceTime>
+  <DestFile>C:/Users/evanw/MyGame/Content/bin/DesktopGL/Content/Map/starter_island.xnb</DestFile>
+  <DestTime>2024-08-25T18:16:56.4678164-07:00</DestTime>
+  <Importer>TiledMapImporter</Importer>
+  <ImporterTime>2024-08-17T19:41:20-07:00</ImporterTime>
+  <Processor>TiledMapProcessor</Processor>
+  <ProcessorTime>2024-08-17T19:41:20-07:00</ProcessorTime>
+  <Dependencies />
+  <BuildAsset>
+    <string>C:/Users/evanw/MyGame/Content/bin/DesktopGL/Content/Map/[A]Grass_pipo.xnb</string>
+    <string>C:/Users/evanw/MyGame/Content/bin/DesktopGL/Content/Map/barrier_0.xnb</string>
+    <string>C:/Users/evanw/MyGame/Content/bin/DesktopGL/Content/Map/fall_beach_0.xnb</string>
+  </BuildAsset>
+  <BuildOutput />
+</PipelineBuildEvent>
