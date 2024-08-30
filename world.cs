@@ -7,23 +7,17 @@ using MonoGame.Extended.Tiled;
 using MonoGame.Extended.Tiled.Renderers;
 
 namespace MyGame {
-    public class World
-    {
+    public class World {
         private readonly TiledMap _tiledMap;
         private readonly TiledMapRenderer _tiledMapRenderer;
         private readonly TiledMapTileLayer _collisionLayer;
-
-        private List<WarpPoint> _warpPoints;
         private Dictionary<Point, List<WarpPoint>> _warpPointsDictionary;
 
-
-
-        public World(TiledMap tiledMap, GraphicsDevice graphicsDevice)
-        {
+        public World(TiledMap tiledMap, GraphicsDevice graphicsDevice) {
             _tiledMap = tiledMap;
             _tiledMapRenderer = new TiledMapRenderer(graphicsDevice, _tiledMap);
 
-            // Assume the collision layer is named "Collisions"
+            // Collision layer is named "Collisions"; need to change to something more general like Barriers
             _collisionLayer = _tiledMap.GetLayer<TiledMapTileLayer>("Collisions");
 
             #if DEBUG
@@ -39,36 +33,30 @@ namespace MyGame {
             LoadWarpPoints();
 
         }
-        public void Update(GameTime gameTime)
-        {
+        public void Update(GameTime gameTime) {
             _tiledMapRenderer.Update(gameTime);
         }
 
-        public void Draw(SpriteBatch spriteBatch, Matrix viewMatrix)
-        {
+        public void Draw(SpriteBatch spriteBatch, Matrix viewMatrix) {
             _tiledMapRenderer.Draw(viewMatrix);
         }
 
-        public bool IsCollidingWithTile(Rectangle entityRectangle)
-        {
+        public bool IsCollidingWithTile(Rectangle entityRectangle) {
             int tileWidth = _tiledMap.TileWidth;
             int tileHeight = _tiledMap.TileHeight;
 
-            // Check the four corners of the entity's hitbox
             var corners = new List<Vector2> {
-                new(entityRectangle.Left, entityRectangle.Top),      // Top-left
-                new(entityRectangle.Right, entityRectangle.Top),     // Top-right
-                new(entityRectangle.Left, entityRectangle.Bottom),   // Bottom-left
-                new(entityRectangle.Right, entityRectangle.Bottom)   // Bottom-right
+                new(entityRectangle.Left, entityRectangle.Top),      
+                new(entityRectangle.Right, entityRectangle.Top), 
+                new(entityRectangle.Left, entityRectangle.Bottom),  
+                new(entityRectangle.Right, entityRectangle.Bottom) 
             };
 
-            foreach (var corner in corners)
-            {
+            foreach (var corner in corners) {
                 ushort tileX = (ushort)(corner.X / tileWidth);
                 ushort tileY = (ushort)(corner.Y / tileHeight);
 
-                if (tileX >= 0 && tileX < _collisionLayer.Width && tileY >= 0 && tileY < _collisionLayer.Height)
-                {
+                if (tileX >= 0 && tileX < _collisionLayer.Width && tileY >= 0 && tileY < _collisionLayer.Height) {
                     var tile = _collisionLayer.GetTile(tileX, tileY);
                     if (tile.GlobalIdentifier != 0)
                     {
@@ -106,8 +94,8 @@ namespace MyGame {
                     };
 
                     // Determine the top-left corner of the tile the warp point is in
-                    var tileX = (int)warpPoint.Bounds.X / _tiledMap.TileWidth;
-                    var tileY = (int)warpPoint.Bounds.Y / _tiledMap.TileHeight;
+                    var tileX = warpPoint.Bounds.X / _tiledMap.TileWidth;
+                    var tileY = warpPoint.Bounds.Y / _tiledMap.TileHeight;
                     var tilePosition = new Point(tileX, tileY);
 
                     if (!_warpPointsDictionary.ContainsKey(tilePosition))
@@ -133,7 +121,6 @@ namespace MyGame {
                 {
                     if (warpPoint.Bounds.Contains(playerHitbox))
                     {
-                        System.Diagnostics.Debug.WriteLine($"Player fully entered warp point: {warpPoint.Name}");
                         return warpPoint;
                     }
                 }

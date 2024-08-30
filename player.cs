@@ -163,8 +163,8 @@ namespace MyGame {
         public Rectangle GetHitbox(Vector2 position)
         {
             return new Rectangle(
-                (int)(position.X + ((32 - hitboxWidth) / 2)), // Top-left X position of the hitbox
-                (int)(position.Y + 32 + 32 - 20), // Top-left Y position of the hitbox
+                (int)(position.X + ((32 - hitboxWidth) / 2)),
+                (int)(position.Y + 32 + 32 - 20),
                 hitboxWidth,
                 20
             );
@@ -172,10 +172,8 @@ namespace MyGame {
 
         public override void Draw(SpriteBatch spriteBatch, SpriteFont font, Matrix viewMatrix)
         {
-            // Draw player
             spriteBatch.Draw(_currentAnimation, _position);
 
-            // Draw inventory if it's shown
             if (_showInventory)
             {
                 _inventory.Draw(spriteBatch, font, viewMatrix);

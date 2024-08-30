@@ -55,7 +55,7 @@ namespace MyGame {
             AsepriteFile aseFile = Content.Load<AsepriteFile>("Character/character");
             _player.LoadContent(aseFile, GraphicsDevice);
 
-            _slimeMonster = new Slime(new Vector2(200, 200), 25f, _world);
+            _slimeMonster = new Slime(new Vector2(200, 200), 100f, _world);
             AsepriteFile slimeAseFile = Content.Load<AsepriteFile>("Monsters/slime");
             _slimeMonster.LoadContent(slimeAseFile, GraphicsDevice);
         }
@@ -65,6 +65,7 @@ namespace MyGame {
                 Exit();
 
             _player.Update(gameTime);
+            _slimeMonster.Update(gameTime);
 
             var warpPoint = _world.CheckForWarp(_player.GetHitbox(_player.Position));
             if (warpPoint != null) {

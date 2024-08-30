@@ -1,3 +1,4 @@
+using System;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
@@ -13,11 +14,17 @@ namespace MyGame {
         private AnimatedSprite _currentAnimation;
 
         private readonly World _world;
+        private Vector2 _movementDirection;
+        private float _timeSinceLastDirectionChange;
+        private readonly float _directionChangeInterval = 2.0f; // Change direction every 2 seconds
+        private readonly Random _random;
 
         public Slime(Vector2 startPosition, float speed, World world) {
             _position = startPosition;
             _speed = speed;
             _world = world;
+            _random = new Random();
+            _movementDirection = GetRandomDirection();
         }
 
         public override void LoadContent(AsepriteFile aseFile, GraphicsDevice graphicsDevice) {
@@ -32,11 +39,15 @@ namespace MyGame {
 
         public override void Update(GameTime gameTime)
         {
-            Vector2 movement = Vector2.Zero;
+            _timeSinceLastDirectionChange += (float)gameTime.ElapsedGameTime.TotalSeconds;
 
-            // Basic AI: Move randomly or towards the player
-            // For simplicity, let's make the slime move randomly for now
-            movement.X = (float)(gameTime.TotalGameTime.TotalSeconds % 2 == 0 ? _speed : -_speed) * (float)gameTime.ElapsedGameTime.TotalSeconds;
+            if (_timeSinceLastDirectionChange >= _directionChangeInterval)
+            {
+                _movementDirection = GetRandomDirection();
+                _timeSinceLastDirectionChange = 0f;
+            }
+
+            Vector2 movement = _movementDirection * _speed * (float)gameTime.ElapsedGameTime.TotalSeconds;
 
             Vector2 newPosition = _position + movement;
             Rectangle slimeHitbox = GetHitbox(newPosition);
@@ -46,7 +57,6 @@ namespace MyGame {
             }
 
             _currentAnimation = movement != Vector2.Zero ? _moveAnimation : _idleAnimation;
-            // _currentAnimation = _idleAnimation;
             _currentAnimation.Play();
             _currentAnimation.Update(gameTime);
         }
@@ -54,6 +64,19 @@ namespace MyGame {
         public override void Draw(SpriteBatch spriteBatch, SpriteFont font, Matrix viewMatrix)
         {
             spriteBatch.Draw(_currentAnimation, _position);
+        }
+
+        private Vector2 GetRandomDirection()
+        {
+            // Generate a random direction
+            int direction = _random.Next(4);
+            return direction switch
+            {
+                0 => new Vector2(1, 0), // Move right
+                1 => new Vector2(-1, 0), // Move left
+                2 => new Vector2(0, 1), // Move down
+                _ => new Vector2(0, -1), // Move up
+            };
         }
 
         private Rectangle GetHitbox(Vector2 position)
