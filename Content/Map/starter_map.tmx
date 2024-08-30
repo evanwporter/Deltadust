@@ -36,7 +36,7 @@
    <properties>
     <property name="MapName" value="Map/starter_island"/>
     <property name="TargetX" value="32"/>
-    <property name="TargetY" value="192"/>
+    <property name="TargetY" value="160"/>
    </properties>
   </object>
  </objectgroup>

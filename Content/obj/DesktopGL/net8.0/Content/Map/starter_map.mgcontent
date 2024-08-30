@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PipelineBuildEvent xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
   <SourceFile>C:/Users/evanw/MyGame/Content/Map/starter_map.tmx</SourceFile>
-  <SourceTime>2024-08-29T17:23:31.8467355-07:00</SourceTime>
+  <SourceTime>2024-08-29T22:18:14.4065844-07:00</SourceTime>
   <DestFile>C:/Users/evanw/MyGame/Content/bin/DesktopGL/Content/Map/starter_map.xnb</DestFile>
-  <DestTime>2024-08-29T17:23:41.6725084-07:00</DestTime>
+  <DestTime>2024-08-29T22:18:27.2786325-07:00</DestTime>
   <Importer>TiledMapImporter</Importer>
   <ImporterTime>2024-08-17T19:41:20-07:00</ImporterTime>
   <Processor>TiledMapProcessor</Processor>

@@ -52,7 +52,7 @@
    <properties>
     <property name="MapName" value="Map/starter_map"/>
     <property name="TargetX" value="160"/>
-    <property name="TargetY" value="350"/>
+    <property name="TargetY" value="320"/>
    </properties>
   </object>
  </objectgroup>

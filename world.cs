@@ -14,6 +14,8 @@ namespace MyGame {
         private readonly TiledMapTileLayer _collisionLayer;
 
         private List<WarpPoint> _warpPoints;
+        private Dictionary<Point, List<WarpPoint>> _warpPointsDictionary;
+
 
 
         public World(TiledMap tiledMap, GraphicsDevice graphicsDevice)
@@ -80,7 +82,7 @@ namespace MyGame {
 
         private void LoadWarpPoints()
         {
-            _warpPoints = new List<WarpPoint>();
+            _warpPointsDictionary = new Dictionary<Point, List<WarpPoint>>();
 
             var objectLayer = _tiledMap.GetLayer<TiledMapObjectLayer>("Warp");
             if (objectLayer != null)
@@ -102,23 +104,44 @@ namespace MyGame {
                             (int)obj.Size.Height
                         )
                     };
-                    _warpPoints.Add(warpPoint);
+
+                    // Determine the top-left corner of the tile the warp point is in
+                    var tileX = (int)warpPoint.Bounds.X / _tiledMap.TileWidth;
+                    var tileY = (int)warpPoint.Bounds.Y / _tiledMap.TileHeight;
+                    var tilePosition = new Point(tileX, tileY);
+
+                    if (!_warpPointsDictionary.ContainsKey(tilePosition))
+                    {
+                        _warpPointsDictionary[tilePosition] = new List<WarpPoint>();
+                    }
+                    _warpPointsDictionary[tilePosition].Add(warpPoint);
                 }
             }
         }
 
         public WarpPoint CheckForWarp(Rectangle playerHitbox)
         {
-            foreach (var warpPoint in _warpPoints)
+            // Determine the top-left corner of the tile the player's hitbox is in
+            var tileX = playerHitbox.Left / _tiledMap.TileWidth;
+            var tileY = playerHitbox.Top / _tiledMap.TileHeight;
+            var playerTilePosition = new Point(tileX, tileY);
+
+            // Check if there is any warp point in the player's current tile
+            if (_warpPointsDictionary.TryGetValue(playerTilePosition, out var warpPoints))
             {
-                if (warpPoint.Bounds.Contains(playerHitbox))
+                foreach (var warpPoint in warpPoints)
                 {
-                    System.Diagnostics.Debug.WriteLine($"Player fully entered warp point: {warpPoint.Name}");
-                    return warpPoint;
+                    if (warpPoint.Bounds.Contains(playerHitbox))
+                    {
+                        System.Diagnostics.Debug.WriteLine($"Player fully entered warp point: {warpPoint.Name}");
+                        return warpPoint;
+                    }
                 }
             }
+            
             return null;
         }
+
 
     }
 }

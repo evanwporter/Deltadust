@@ -1,0 +1,642 @@
+```
+#define DEBUG
+
+using System.IO;
+
+using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
+using Microsoft.Xna.Framework.Input;
+
+using MonoGame.Extended.Tiled;
+using AsepriteDotNet.Aseprite;
+
+
+namespace MyGame {
+    public class Game1 : Game {
+        private GraphicsDeviceManager _graphics;
+        private SpriteBatch _spriteBatch;
+
+        private Camera _camera;
+        private SpriteFont _font;
+
+        private Player _player;
+        private Slime _slimeMonster;
+
+        private World _world;
+
+        public Game1() {
+            _graphics = new GraphicsDeviceManager(this);
+            Content.RootDirectory = "Content";
+            IsMouseVisible = true;
+            Window.AllowUserResizing = true;
+        }
+
+        protected override void Initialize() {
+            _camera = new Camera(GraphicsDevice.Viewport);
+
+            base.Initialize();
+        }
+
+        protected override void LoadContent() {
+            _spriteBatch = new SpriteBatch(GraphicsDevice);
+
+            _font = Content.Load<SpriteFont>("Fonts/ArialFont");
+
+            TiledMap tiledMap = Content.Load<TiledMap>("Map/starter_island");
+            _world = new World(tiledMap, GraphicsDevice);
+
+            _player = new Player(
+                new Vector2(300, 300), 
+                100f, 
+                Path.Combine(Content.RootDirectory, "inventory.xml"),
+                _world
+            );
+
+            AsepriteFile aseFile = Content.Load<AsepriteFile>("Character/character");
+            _player.LoadContent(aseFile, GraphicsDevice);
+
+            _slimeMonster = new Slime(new Vector2(200, 200), 25f, _world);
+            AsepriteFile slimeAseFile = Content.Load<AsepriteFile>("Monsters/slime");
+            _slimeMonster.LoadContent(slimeAseFile, GraphicsDevice);
+        }
+
+        protected override void Update(GameTime gameTime) {
+            if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
+                Exit();
+
+            _player.Update(gameTime);
+
+            var warpPoint = _world.CheckForWarp(_player.GetHitbox(_player.Position));
+            if (warpPoint != null) {
+                WarpToMap(warpPoint.MapName, warpPoint.TargetPosition);
+            }
+
+            // Update the camera position to follow the player
+            _camera.Position = _player.Position - new Vector2(GraphicsDevice.Viewport.Width / 2, GraphicsDevice.Viewport.Height / 2) / _camera.Zoom;
+
+            _world.Update(gameTime);
+
+            base.Update(gameTime);
+        }
+
+        protected override void Draw(GameTime gameTime) {
+            GraphicsDevice.Clear(Color.CornflowerBlue);
+
+            // Apply camera transformation
+            Matrix viewMatrix = _camera.GetViewMatrix();
+
+            _spriteBatch.Begin(transformMatrix: viewMatrix, samplerState: SamplerState.PointClamp);
+
+            _world.Draw(_spriteBatch, viewMatrix);
+
+            _player.Draw(_spriteBatch, _font, viewMatrix);
+
+            _slimeMonster.Draw(_spriteBatch, _font, viewMatrix);
+
+            _spriteBatch.End();
+
+            base.Draw(gameTime);
+        }
+
+        public void WarpToMap(string mapName, Vector2 newPlayerPosition)
+        {
+            TiledMap newMap = Content.Load<TiledMap>(mapName);
+
+            _world = new World(newMap, GraphicsDevice);
+
+            _player.SetPosition(newPlayerPosition);
+            _camera.Position = _player.Position - new Vector2(GraphicsDevice.Viewport.Width / 2, GraphicsDevice.Viewport.Height / 2) / _camera.Zoom;
+
+            System.Diagnostics.Debug.WriteLine($"Warping to {mapName} at position {newPlayerPosition}");
+        }
+    }
+}
+```
+
+```
+using System.Collections.Generic;
+
+using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
+
+using MonoGame.Extended.Tiled;
+using MonoGame.Extended.Tiled.Renderers;
+
+namespace MyGame {
+    public class World
+    {
+        private readonly TiledMap _tiledMap;
+        private readonly TiledMapRenderer _tiledMapRenderer;
+        private readonly TiledMapTileLayer _collisionLayer;
+
+        private List<WarpPoint> _warpPoints;
+
+
+        public World(TiledMap tiledMap, GraphicsDevice graphicsDevice)
+        {
+            _tiledMap = tiledMap;
+            _tiledMapRenderer = new TiledMapRenderer(graphicsDevice, _tiledMap);
+
+            // Assume the collision layer is named "Collisions"
+            _collisionLayer = _tiledMap.GetLayer<TiledMapTileLayer>("Collisions");
+
+            #if DEBUG
+            if (_collisionLayer == null) {
+                System.Diagnostics.Debug.WriteLine("Collision tile layer not found in the tiled map!");
+            }
+            #endif
+
+            #if !DEBUG
+            _collisionLayer.IsVisible = false;
+            #endif
+
+            LoadWarpPoints();
+
+        }
+        public void Update(GameTime gameTime)
+        {
+            _tiledMapRenderer.Update(gameTime);
+        }
+
+        public void Draw(SpriteBatch spriteBatch, Matrix viewMatrix)
+        {
+            _tiledMapRenderer.Draw(viewMatrix);
+        }
+
+        public bool IsCollidingWithTile(Rectangle entityRectangle)
+        {
+            int tileWidth = _tiledMap.TileWidth;
+            int tileHeight = _tiledMap.TileHeight;
+
+            // Check the four corners of the entity's hitbox
+            var corners = new List<Vector2> {
+                new(entityRectangle.Left, entityRectangle.Top),      // Top-left
+                new(entityRectangle.Right, entityRectangle.Top),     // Top-right
+                new(entityRectangle.Left, entityRectangle.Bottom),   // Bottom-left
+                new(entityRectangle.Right, entityRectangle.Bottom)   // Bottom-right
+            };
+
+            foreach (var corner in corners)
+            {
+                ushort tileX = (ushort)(corner.X / tileWidth);
+                ushort tileY = (ushort)(corner.Y / tileHeight);
+
+                if (tileX >= 0 && tileX < _collisionLayer.Width && tileY >= 0 && tileY < _collisionLayer.Height)
+                {
+                    var tile = _collisionLayer.GetTile(tileX, tileY);
+                    if (tile.GlobalIdentifier != 0)
+                    {
+                        return true;
+                    }
+                }
+            }
+
+            return false;
+        }
+
+        private void LoadWarpPoints()
+        {
+            _warpPoints = new List<WarpPoint>();
+
+            var objectLayer = _tiledMap.GetLayer<TiledMapObjectLayer>("Warp");
+            if (objectLayer != null)
+            {
+                foreach (var obj in objectLayer.Objects)
+                {
+                    var warpPoint = new WarpPoint
+                    {
+                        Name = obj.Name,
+                        MapName = obj.Properties["MapName"]?.ToString(),
+                        TargetPosition = new Vector2(
+                            float.Parse(obj.Properties["TargetX"].ToString()),
+                            float.Parse(obj.Properties["TargetY"].ToString())
+                        ),
+                        Bounds = new Rectangle(
+                            (int)obj.Position.X,
+                            (int)obj.Position.Y - 32,
+                            (int)obj.Size.Width,
+                            (int)obj.Size.Height
+                        )
+                    };
+                    _warpPoints.Add(warpPoint);
+                }
+            }
+        }
+
+        public WarpPoint CheckForWarp(Rectangle playerHitbox)
+        {
+            foreach (var warpPoint in _warpPoints)
+            {
+                if (warpPoint.Bounds.Contains(playerHitbox))
+                {
+                    System.Diagnostics.Debug.WriteLine($"Player fully entered warp point: {warpPoint.Name}");
+                    return warpPoint;
+                }
+            }
+            return null;
+        }
+
+    }
+}
+```
+
+```
+using Microsoft.Xna.Framework;
+
+namespace MyGame {
+    public class WarpPoint {
+        public string Name { get; set; }
+        public string MapName { get; set; }
+        public Vector2 TargetPosition { get; set; }
+        public Rectangle Bounds { get; set; }
+    } 
+}
+```
+
+```
+using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
+using Microsoft.Xna.Framework.Input;
+
+using AsepriteDotNet.Aseprite;
+using MonoGame.Aseprite;
+
+
+namespace MyGame {
+    public class Player : Entity
+    {
+        private Vector2 _position;
+        private readonly float _speed;
+        private AnimatedSprite _runForwardCycle;
+        private AnimatedSprite _runBackwardCycle;
+        private AnimatedSprite _runRightCycle;
+
+        private AnimatedSprite _standForward;
+        private AnimatedSprite _standBackward;
+        private AnimatedSprite _standRight;
+
+        private AnimatedSprite _currentAnimation;
+
+        private readonly Inventory _inventory;
+        private bool _showInventory;
+        private readonly string _inventoryFilePath;
+
+        private KeyboardState _previousKeyboardState;
+
+        private readonly World _world;
+        private readonly int hitboxWidth = 20;
+
+        public Player(Vector2 startPosition, float speed, string inventoryFilePath, World world)
+            // : base(startPosition, speed)
+        {
+            _position = startPosition;
+            _speed = speed;
+            _inventoryFilePath = inventoryFilePath;
+
+            _inventory = Inventory.LoadFromFile(_inventoryFilePath);
+            _showInventory = false;
+
+            _previousKeyboardState = Keyboard.GetState();
+            _world = world;
+        }
+
+        public override void LoadContent(AsepriteFile aseFile, GraphicsDevice graphicsDevice) {
+            
+            SpriteSheet spriteSheet = aseFile.CreateSpriteSheet(graphicsDevice);
+
+            // Running animations
+            _runForwardCycle = spriteSheet.CreateAnimatedSprite("Run Forward");
+            _runBackwardCycle = spriteSheet.CreateAnimatedSprite("Run Backward");
+            _runRightCycle = spriteSheet.CreateAnimatedSprite("Run Right");
+
+            // Standing animations
+            _standForward = spriteSheet.CreateAnimatedSprite("Stand Forward");
+            _standBackward = spriteSheet.CreateAnimatedSprite("Stand Backward");
+            _standRight = spriteSheet.CreateAnimatedSprite("Stand Right");
+
+            _currentAnimation = _runForwardCycle;
+        }
+
+        public override void Update(GameTime gameTime) {
+            var keyboardState = Keyboard.GetState();
+
+            // Toggle inventory on/off
+            if (keyboardState.IsKeyDown(Keys.E) && !_previousKeyboardState.IsKeyDown(Keys.E)) {
+                _showInventory = !_showInventory;
+            }
+
+            // Only handle movement if the inventory is not open
+            if (!_showInventory)
+            {
+                HandleMovement(gameTime, keyboardState);
+            }
+
+            _previousKeyboardState = keyboardState;
+        }
+
+        private void HandleMovement(GameTime gameTime, KeyboardState keyboardState)
+        {
+            bool isMoving = false;
+            Vector2 movement = Vector2.Zero;
+
+            if (keyboardState.IsKeyDown(Keys.W) || keyboardState.IsKeyDown(Keys.Up))
+            {
+                movement.Y -= _speed * (float)gameTime.ElapsedGameTime.TotalSeconds;
+                _currentAnimation = _runBackwardCycle;
+                _currentAnimation.FlipHorizontally = false;
+                isMoving = true;
+            }
+            if (keyboardState.IsKeyDown(Keys.S) || keyboardState.IsKeyDown(Keys.Down))
+            {
+                movement.Y += _speed * (float)gameTime.ElapsedGameTime.TotalSeconds;
+                _currentAnimation = _runForwardCycle;
+                _currentAnimation.FlipHorizontally = false;
+                isMoving = true;
+            }
+            if (keyboardState.IsKeyDown(Keys.A) || keyboardState.IsKeyDown(Keys.Left))
+            {
+                movement.X -= _speed * (float)gameTime.ElapsedGameTime.TotalSeconds;
+                _currentAnimation = _runRightCycle;
+                _currentAnimation.FlipHorizontally = true;
+                isMoving = true;
+            }
+            if (keyboardState.IsKeyDown(Keys.D) || keyboardState.IsKeyDown(Keys.Right))
+            {
+                movement.X += _speed * (float)gameTime.ElapsedGameTime.TotalSeconds;
+                _currentAnimation = _runRightCycle;
+                _currentAnimation.FlipHorizontally = false;
+                isMoving = true;
+            }
+
+            Vector2 newPosition = Position + new Vector2(movement.X, 0);
+            Rectangle playerHitbox = GetHitbox(newPosition);
+            if (!_world.IsCollidingWithTile(playerHitbox))
+            {
+                _position.X = newPosition.X;
+            }
+
+            newPosition = Position + new Vector2(0, movement.Y);
+            playerHitbox = GetHitbox(newPosition);
+            if (!_world.IsCollidingWithTile(playerHitbox))
+            {
+                _position.Y = newPosition.Y;
+            }
+
+
+            if (isMoving)
+            {
+                if (!_world.IsCollidingWithTile(playerHitbox))
+                {
+                    _position = newPosition;
+                }
+                _currentAnimation.Play();
+                _currentAnimation.Update(gameTime);
+            }
+            else
+            {
+                if (_currentAnimation == _runForwardCycle)
+                {
+                    _currentAnimation = _standForward;
+                }
+                else if (_currentAnimation == _runBackwardCycle)
+                {
+                    _currentAnimation = _standBackward;
+                }
+                else if (_currentAnimation == _runRightCycle && !_currentAnimation.FlipHorizontally)
+                {
+                    _currentAnimation = _standRight;
+                    _currentAnimation.FlipHorizontally = false;
+                }
+                else if (_currentAnimation.FlipHorizontally)
+                {
+                    _currentAnimation = _standRight;
+                    _currentAnimation.FlipHorizontally = true;
+                }
+                _currentAnimation.Play();
+            }
+        }
+
+        public Rectangle GetHitbox(Vector2 position)
+        {
+            return new Rectangle(
+                (int)(position.X + ((32 - hitboxWidth) / 2)), // Top-left X position of the hitbox
+                (int)(position.Y + 32 + 32 - 20), // Top-left Y position of the hitbox
+                hitboxWidth,
+                20
+            );
+        }
+
+        public override void Draw(SpriteBatch spriteBatch, SpriteFont font, Matrix viewMatrix)
+        {
+            // Draw player
+            spriteBatch.Draw(_currentAnimation, _position);
+
+            // Draw inventory if it's shown
+            if (_showInventory)
+            {
+                _inventory.Draw(spriteBatch, font, viewMatrix);
+            }
+
+            Texture2D hitboxTexture = new(spriteBatch.GraphicsDevice, 1, 1);
+            hitboxTexture.SetData(new[] { Color.Red });
+
+            spriteBatch.Draw(hitboxTexture, GetHitbox(_position), Color.Red * 0.5f);
+        }
+
+        public Vector2 Position => _position;
+
+        public void SetPosition(Vector2 newPosition)
+        {
+            _position = newPosition;
+        }
+    }
+}
+```
+
+```
+using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
+
+using AsepriteDotNet.Aseprite;
+using MonoGame.Aseprite;
+
+namespace MyGame {
+    public class Slime : Entity {
+        private Vector2 _position;
+        private readonly float _speed;
+        private AnimatedSprite _moveAnimation;
+        private AnimatedSprite _idleAnimation;
+        private AnimatedSprite _currentAnimation;
+
+        private readonly World _world;
+
+        public Slime(Vector2 startPosition, float speed, World world) {
+            _position = startPosition;
+            _speed = speed;
+            _world = world;
+        }
+
+        public override void LoadContent(AsepriteFile aseFile, GraphicsDevice graphicsDevice) {
+            SpriteSheet spriteSheet = aseFile.CreateSpriteSheet(graphicsDevice);
+
+            // Load animations
+            _moveAnimation = spriteSheet.CreateAnimatedSprite("Jump");
+            _idleAnimation = spriteSheet.CreateAnimatedSprite("Jump");
+
+            _currentAnimation = _idleAnimation;
+        }
+
+        public override void Update(GameTime gameTime)
+        {
+            Vector2 movement = Vector2.Zero;
+
+            // Basic AI: Move randomly or towards the player
+            // For simplicity, let's make the slime move randomly for now
+            movement.X = (float)(gameTime.TotalGameTime.TotalSeconds % 2 == 0 ? _speed : -_speed) * (float)gameTime.ElapsedGameTime.TotalSeconds;
+
+            Vector2 newPosition = _position + movement;
+            Rectangle slimeHitbox = GetHitbox(newPosition);
+            if (!_world.IsCollidingWithTile(slimeHitbox))
+            {
+                _position = newPosition;
+            }
+
+            _currentAnimation = movement != Vector2.Zero ? _moveAnimation : _idleAnimation;
+            // _currentAnimation = _idleAnimation;
+            _currentAnimation.Play();
+            _currentAnimation.Update(gameTime);
+        }
+
+        public override void Draw(SpriteBatch spriteBatch, SpriteFont font, Matrix viewMatrix)
+        {
+            spriteBatch.Draw(_currentAnimation, _position);
+        }
+
+        private Rectangle GetHitbox(Vector2 position)
+        {
+            return new Rectangle(
+                (int)(position.X + 10), // Adjust the hitbox position and size as needed
+                (int)(position.Y + 10),
+                20, // Width of the hitbox
+                20  // Height of the hitbox
+            );
+        }
+
+        public Vector2 Position => _position;
+    }
+}
+```
+
+```
+using System.Collections.Generic;
+using System.IO;
+using System.Xml.Serialization;
+using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
+
+namespace MyGame {
+    [XmlRoot("Inventory")]
+    public class Inventory
+    {
+        [XmlArray("Items")]
+        [XmlArrayItem("Item")]
+        private List<string> Items { get; set; }
+
+        public Inventory()
+        {
+            Items = [];
+        }
+
+        public void AddItem(string item)
+        {
+            Items.Add(item);
+        }
+
+        public void RemoveItem(string item)
+        {
+            Items.Remove(item);
+        }
+
+        public void SaveToFile(string filePath)
+        {
+            XmlSerializer serializer = new(typeof(Inventory));
+            using FileStream stream = new(filePath, FileMode.Create);
+            serializer.Serialize(stream, this);
+        }
+
+        public static Inventory LoadFromFile(string filePath)
+        {
+            if (File.Exists(filePath))
+            {
+                XmlSerializer serializer = new(typeof(Inventory));
+                using (FileStream stream = new(filePath, FileMode.Open))
+                {
+                    return (Inventory)serializer.Deserialize(stream);
+                }
+            }
+            else
+            {
+                return new Inventory(); // Return an empty inventory if the file doesn't exist
+            }
+        }
+
+        public void Draw(SpriteBatch spriteBatch, SpriteFont font, Matrix viewMatrix)
+        {
+            // Draw the inventory relative to the camera position (top-left corner of the screen)
+            Vector2 position = Vector2.Transform(new Vector2(10, 10), Matrix.Invert(viewMatrix));
+
+            spriteBatch.DrawString(font, "Inventory:", position, Color.White);
+            position.Y += 30;
+
+            foreach (string item in Items)
+            {
+                spriteBatch.DrawString(font, item, position, Color.White);
+                position.Y += 30;
+            }
+        }
+    }
+}
+```
+
+```
+using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
+
+namespace MyGame {
+    public class Camera
+    {
+        private readonly Viewport _viewport;
+        private Vector2 _position;
+
+        public Camera(Viewport viewport)
+        {
+            _viewport = viewport;
+            Zoom = 1.0f;
+        }
+
+        public Vector2 Position
+        {
+            get => _position;
+            set
+            {
+                _position = value;
+                ClampPosition();
+            }
+        }
+
+        public float Zoom { get; set; }
+
+        public Matrix GetViewMatrix()
+        {
+            return Matrix.CreateTranslation(new Vector3(-_position, 0.0f)) *
+                Matrix.CreateScale(Zoom, Zoom, 1.0f);
+        }
+
+        private void ClampPosition()
+        {
+            var cameraMax = new Vector2(_viewport.Width, _viewport.Height) / Zoom;
+            _position = Vector2.Clamp(_position, Vector2.Zero, cameraMax);
+        }
+    }
+}
+```
