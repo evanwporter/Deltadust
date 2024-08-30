@@ -1,14 +1,9 @@
-using System.Collections.Generic; // This namespace is needed for List<>
-
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 
 using AsepriteDotNet.Aseprite;
 using MonoGame.Aseprite;
-
-using MonoGame.Extended.Tiled;
-using MonoGame.Extended.Tiled.Renderers;
 
 
 namespace MyGame {
@@ -165,7 +160,7 @@ namespace MyGame {
             }
         }
 
-        private Rectangle GetHitbox(Vector2 position)
+        public Rectangle GetHitbox(Vector2 position)
         {
             return new Rectangle(
                 (int)(position.X + ((32 - hitboxWidth) / 2)), // Top-left X position of the hitbox
@@ -193,5 +188,10 @@ namespace MyGame {
         }
 
         public Vector2 Position => _position;
+
+        public void SetPosition(Vector2 newPosition)
+        {
+            _position = newPosition;
+        }
     }
 }

@@ -54,3 +54,7 @@ C:\Users\evanw\MyGame\bin\Debug\net8.0\Content\Character\character.xnb
 c:\Users\evanw\MyGame\bin\Debug\net8.0\Content\Fonts\ArialFont.xnb
 c:\Users\evanw\MyGame\obj\Debug\net8.0\MyGame.sourcelink.json
 c:\Users\evanw\MyGame\bin\Debug\net8.0\Content\Monsters\slime.xnb
+c:\Users\evanw\MyGame\bin\Debug\net8.0\Content\Map\WarpPanel_0.xnb
+c:\Users\evanw\MyGame\bin\Debug\net8.0\Content\Map\WarpPanel_1.xnb
+c:\Users\evanw\MyGame\bin\Debug\net8.0\Content\Map\Desert_Oasis_0.xnb
+c:\Users\evanw\MyGame\bin\Debug\net8.0\Content\Map\starter_map.xnb

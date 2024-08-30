@@ -79,6 +79,11 @@
 /processor:TiledMapProcessor
 /build:Map/starter_island.tmx
 
+#begin Map/starter_map.tmx
+/importer:TiledMapImporter
+/processor:TiledMapProcessor
+/build:Map/starter_map.tmx
+
 #begin Monsters/slime.aseprite
 /importer:AsepriteFileContentImporter
 /processor:AsepriteFileContentProcessor

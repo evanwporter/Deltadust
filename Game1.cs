@@ -1,14 +1,14 @@
-﻿using System;
+﻿#define DEBUG
+
+
 using System.IO;
-using System.Collections.Generic;
+
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+
 using MonoGame.Extended.Tiled;
-using MonoGame.Extended.Tiled.Renderers;
 using AsepriteDotNet.Aseprite;
-using AsepriteDotNet.IO;
-using MonoGame.Aseprite;
 
 
 namespace MyGame {
@@ -66,6 +66,11 @@ namespace MyGame {
 
             _player.Update(gameTime);
 
+            var warpPoint = _world.CheckForWarp(_player.GetHitbox(_player.Position));
+            if (warpPoint != null) {
+                WarpToMap(warpPoint.MapName, warpPoint.TargetPosition);
+            }
+
             // Update the camera position to follow the player
             _camera.Position = _player.Position - new Vector2(GraphicsDevice.Viewport.Width / 2, GraphicsDevice.Viewport.Height / 2) / _camera.Zoom;
 
@@ -91,6 +96,18 @@ namespace MyGame {
             _spriteBatch.End();
 
             base.Draw(gameTime);
+        }
+
+        public void WarpToMap(string mapName, Vector2 newPlayerPosition)
+        {
+            TiledMap newMap = Content.Load<TiledMap>(mapName);
+
+            _world = new World(newMap, GraphicsDevice);
+
+            _player.SetPosition(newPlayerPosition);
+            _camera.Position = _player.Position - new Vector2(GraphicsDevice.Viewport.Width / 2, GraphicsDevice.Viewport.Height / 2) / _camera.Zoom;
+
+            System.Diagnostics.Debug.WriteLine($"Warping to {mapName} at position {newPlayerPosition}");
         }
     }
 }

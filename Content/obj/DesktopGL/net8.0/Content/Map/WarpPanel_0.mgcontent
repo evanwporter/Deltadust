@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PipelineBuildEvent xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
-  <SourceFile>C:/Program Files (x86)/Steam/steamapps/common/Stardew Valley/Content (unpacked)/Maps/fall_beach.png</SourceFile>
-  <SourceTime>2024-08-24T20:17:00.2855878-07:00</SourceTime>
-  <DestFile>C:/Users/evanw/MyGame/Content/bin/DesktopGL/Content/../../../../Program Files (x86)/Steam/steamapps/common/Stardew Valley/Content (unpacked)/Maps/fall_beach_0.xnb</DestFile>
-  <DestTime>2024-08-25T18:09:33.1991497-07:00</DestTime>
+  <SourceFile>C:/Users/evanw/MyGame/Content/Map/WarpPanel.png</SourceFile>
+  <SourceTime>2024-08-29T16:45:35.2176482-07:00</SourceTime>
+  <DestFile>C:/Users/evanw/MyGame/Content/bin/DesktopGL/Content/Map/WarpPanel_0.xnb</DestFile>
+  <DestTime>2024-08-29T17:10:38.5868343-07:00</DestTime>
   <Importer>TextureImporter</Importer>
   <ImporterTime>2024-08-16T10:05:56-07:00</ImporterTime>
   <Processor>TextureProcessor</Processor>

@@ -1,7 +1,8 @@
-using System;
 using System.Collections.Generic;
+
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+
 using MonoGame.Extended.Tiled;
 using MonoGame.Extended.Tiled.Renderers;
 
@@ -11,6 +12,9 @@ namespace MyGame {
         private readonly TiledMap _tiledMap;
         private readonly TiledMapRenderer _tiledMapRenderer;
         private readonly TiledMapTileLayer _collisionLayer;
+
+        private List<WarpPoint> _warpPoints;
+
 
         public World(TiledMap tiledMap, GraphicsDevice graphicsDevice)
         {
@@ -26,7 +30,11 @@ namespace MyGame {
             }
             #endif
 
-            // _collisionLayer.IsVisible = false;
+            #if !DEBUG
+            _collisionLayer.IsVisible = false;
+            #endif
+
+            LoadWarpPoints();
 
         }
         public void Update(GameTime gameTime)
@@ -69,5 +77,48 @@ namespace MyGame {
 
             return false;
         }
+
+        private void LoadWarpPoints()
+        {
+            _warpPoints = new List<WarpPoint>();
+
+            var objectLayer = _tiledMap.GetLayer<TiledMapObjectLayer>("Warp");
+            if (objectLayer != null)
+            {
+                foreach (var obj in objectLayer.Objects)
+                {
+                    var warpPoint = new WarpPoint
+                    {
+                        Name = obj.Name,
+                        MapName = obj.Properties["MapName"]?.ToString(),
+                        TargetPosition = new Vector2(
+                            float.Parse(obj.Properties["TargetX"].ToString()),
+                            float.Parse(obj.Properties["TargetY"].ToString())
+                        ),
+                        Bounds = new Rectangle(
+                            (int)obj.Position.X,
+                            (int)obj.Position.Y - 32,
+                            (int)obj.Size.Width,
+                            (int)obj.Size.Height
+                        )
+                    };
+                    _warpPoints.Add(warpPoint);
+                }
+            }
+        }
+
+        public WarpPoint CheckForWarp(Rectangle playerHitbox)
+        {
+            foreach (var warpPoint in _warpPoints)
+            {
+                if (warpPoint.Bounds.Contains(playerHitbox))
+                {
+                    System.Diagnostics.Debug.WriteLine($"Player fully entered warp point: {warpPoint.Name}");
+                    return warpPoint;
+                }
+            }
+            return null;
+        }
+
     }
 }
