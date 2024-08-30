@@ -6,17 +6,17 @@
   <SourceFiles>
     <File>C:/Users/evanw/MyGame/Content/Character/character.aseprite</File>
     <File>C:/Users/evanw/MyGame/Content/Fonts/ArialFont.png</File>
-    <File>C:/Users/evanw/MyGame/Content/Map/[A]Dirt_pipo.tsx</File>
-    <File>C:/Users/evanw/MyGame/Content/Map/[A]Flower_pipo.tsx</File>
-    <File>C:/Users/evanw/MyGame/Content/Map/[A]Grass_pipo.tsx</File>
-    <File>C:/Users/evanw/MyGame/Content/Map/[A]Wall-Up_pipo.tsx</File>
-    <File>C:/Users/evanw/MyGame/Content/Map/[A]Water_pipo.tsx</File>
-    <File>C:/Users/evanw/MyGame/Content/Map/[A]WaterFall_pipo.tsx</File>
-    <File>C:/Users/evanw/MyGame/Content/Map/[Base]BaseChip_pipo.tsx</File>
-    <File>C:/Users/evanw/MyGame/Content/Map/LightShadow_pipo.tsx</File>
-    <File>C:/Users/evanw/MyGame/Content/Map/samplemap.tmx</File>
-    <File>C:/Users/evanw/MyGame/Content/Map/starter_island.tmx</File>
-    <File>C:/Users/evanw/MyGame/Content/Map/starter_map.tmx</File>
+    <File>C:/Users/evanw/MyGame/Content/Maps/[A]Dirt_pipo.tsx</File>
+    <File>C:/Users/evanw/MyGame/Content/Maps/[A]Flower_pipo.tsx</File>
+    <File>C:/Users/evanw/MyGame/Content/Maps/[A]Grass_pipo.tsx</File>
+    <File>C:/Users/evanw/MyGame/Content/Maps/[A]Wall-Up_pipo.tsx</File>
+    <File>C:/Users/evanw/MyGame/Content/Maps/[A]Water_pipo.tsx</File>
+    <File>C:/Users/evanw/MyGame/Content/Maps/[A]WaterFall_pipo.tsx</File>
+    <File>C:/Users/evanw/MyGame/Content/Maps/[Base]BaseChip_pipo.tsx</File>
+    <File>C:/Users/evanw/MyGame/Content/Maps/LightShadow_pipo.tsx</File>
+    <File>C:/Users/evanw/MyGame/Content/Maps/samplemap.tmx</File>
+    <File>C:/Users/evanw/MyGame/Content/Maps/starter_island.tmx</File>
+    <File>C:/Users/evanw/MyGame/Content/Maps/starter_map.tmx</File>
     <File>C:/Users/evanw/MyGame/Content/Monsters/slime.aseprite</File>
   </SourceFiles>
   <DestFiles>
