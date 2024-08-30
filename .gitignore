@@ -1,7 +1,4 @@
-all.txt
-xfontgen/
-app.manifest
 obj/
 bin/
-Content/bin/
-Content/obj/
+Content/bin/*
+Content/obj/*
