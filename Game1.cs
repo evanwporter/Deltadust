@@ -42,7 +42,7 @@ namespace MyGame {
 
             _font = Content.Load<SpriteFont>("Fonts/ArialFont");
 
-            TiledMap tiledMap = Content.Load<TiledMap>("Map/starter_island");
+            TiledMap tiledMap = Content.Load<TiledMap>("Maps/starter_island");
             _world = new World(tiledMap, GraphicsDevice);
 
             _player = new Player(
