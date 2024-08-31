@@ -9,6 +9,7 @@ using Microsoft.Xna.Framework.Input;
 
 using MonoGame.Extended.Tiled;
 using AsepriteDotNet.Aseprite;
+using System.Collections.Generic;
 
 
 namespace MyGame {
@@ -20,8 +21,8 @@ namespace MyGame {
         private SpriteFont _font;
 
         private Player _player;
-        private Slime _slimeMonster;
-        private NPC _npc;
+        private List<NPC> _npcs;
+        private List<Slime> _monsters;
 
 
         private World _world;
@@ -40,6 +41,10 @@ namespace MyGame {
         }
 
         protected override void LoadContent() {
+
+            _npcs = new List<NPC>();
+            _monsters = new List<Slime>();
+
             _spriteBatch = new SpriteBatch(GraphicsDevice);
 
             _font = Content.Load<SpriteFont>("Fonts/ArialFont");
@@ -57,22 +62,32 @@ namespace MyGame {
             AsepriteFile aseFile = Content.Load<AsepriteFile>("Character/character");
             _player.LoadContent(aseFile, GraphicsDevice);
 
-            _slimeMonster = new Slime(new Vector2(200, 200), 100f, _world);
+            Slime _slimeMonster = new Slime(new Vector2(200, 200), 100f, _world);
             AsepriteFile slimeAseFile = Content.Load<AsepriteFile>("Monsters/slime");
             _slimeMonster.LoadContent(slimeAseFile, GraphicsDevice);
 
-            _npc = new NPC(new Vector2(400, 300), "Hello, traveler!", _world);
+            NPC _npc = new NPC(new Vector2(400, 300), "Hello, traveler!", _world);
             AsepriteFile npcAseFile = Content.Load<AsepriteFile>("Character/Lewis_Beach");
             _npc.LoadContent(npcAseFile, GraphicsDevice);
+
+            _npcs.Add(_npc);
+            _monsters.Add(_slimeMonster);
+
         }
 
         protected override void Update(GameTime gameTime) {
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
                 Exit();
 
-            _npc.Update(gameTime);
             _player.Update(gameTime);
-            _slimeMonster.Update(gameTime);
+
+            foreach (var npc in _npcs) {
+                npc.Update(gameTime);
+            }
+
+            foreach (var monster in _monsters) {
+                monster.Update(gameTime);
+            }
 
             var warpPoint = _world.CheckForWarp(_player.GetHitbox(_player.Position));
             if (warpPoint != null) {
@@ -99,9 +114,13 @@ namespace MyGame {
 
             _player.Draw(_spriteBatch, _font, viewMatrix);
 
-            _npc.Draw(_spriteBatch, _font, viewMatrix);
+            foreach (var npc in _npcs) {
+                npc.Draw(_spriteBatch, _font, viewMatrix);
+            }
 
-            _slimeMonster.Draw(_spriteBatch, _font, viewMatrix);
+            foreach (var monster in _monsters) {
+                monster.Draw(_spriteBatch, _font, viewMatrix);
+            }
 
             _spriteBatch.End();
 
