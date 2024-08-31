@@ -21,6 +21,8 @@ namespace MyGame {
 
         private Player _player;
         private Slime _slimeMonster;
+        private NPC _npc;
+
 
         private World _world;
 
@@ -58,12 +60,17 @@ namespace MyGame {
             _slimeMonster = new Slime(new Vector2(200, 200), 100f, _world);
             AsepriteFile slimeAseFile = Content.Load<AsepriteFile>("Monsters/slime");
             _slimeMonster.LoadContent(slimeAseFile, GraphicsDevice);
+
+            _npc = new NPC(new Vector2(400, 300), "Hello, traveler!", _world);
+            AsepriteFile npcAseFile = Content.Load<AsepriteFile>("Character/Lewis_Beach");
+            _npc.LoadContent(npcAseFile, GraphicsDevice);
         }
 
         protected override void Update(GameTime gameTime) {
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
                 Exit();
 
+            _npc.Update(gameTime);
             _player.Update(gameTime);
             _slimeMonster.Update(gameTime);
 
@@ -91,6 +98,8 @@ namespace MyGame {
             _world.Draw(_spriteBatch, viewMatrix);
 
             _player.Draw(_spriteBatch, _font, viewMatrix);
+
+            _npc.Draw(_spriteBatch, _font, viewMatrix);
 
             _slimeMonster.Draw(_spriteBatch, _font, viewMatrix);
 
