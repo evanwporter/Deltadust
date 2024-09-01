@@ -23,6 +23,12 @@ namespace MyGame {
 
         private readonly Inventory _inventory;
         private bool _showInventory;
+
+        public bool InventoryOpen {
+            get {
+                return _showInventory;
+            }
+        }
         private readonly string _inventoryFilePath;
 
         private KeyboardState _previousKeyboardState;

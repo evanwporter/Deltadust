@@ -81,12 +81,14 @@ namespace MyGame {
 
             _player.Update(gameTime);
 
-            foreach (var npc in _npcs) {
-                npc.Update(gameTime);
-            }
+            if (!IsPaused()) {
+                foreach (var npc in _npcs) {
+                    npc.Update(gameTime);
+                }
 
-            foreach (var monster in _monsters) {
-                monster.Update(gameTime);
+                foreach (var monster in _monsters) {
+                    monster.Update(gameTime);
+                }
             }
 
             var warpPoint = _world.CheckForWarp(_player.GetHitbox(_player.Position));
@@ -100,6 +102,13 @@ namespace MyGame {
             _world.Update(gameTime);
 
             base.Update(gameTime);
+        }
+
+        public bool IsPaused() {
+            if (_player.InventoryOpen) {
+                return true;
+            }
+            return false;
         }
 
         protected override void Draw(GameTime gameTime) {

@@ -21,6 +21,12 @@
 /processorParam:PremultiplyAlpha=True
 /build:Character/character.aseprite
 
+#begin Character/goblin.aseprite
+/importer:AsepriteFileContentImporter
+/processor:AsepriteFileContentProcessor
+/processorParam:PremultiplyAlpha=True
+/build:Character/goblin.aseprite
+
 #begin Character/Lewis_Beach.aseprite
 /importer:AsepriteFileContentImporter
 /processor:AsepriteFileContentProcessor
