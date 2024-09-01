@@ -11,9 +11,9 @@ namespace MyGame {
     {
         private Vector2 _position;
         private readonly float _speed;
-        private AnimatedSprite _runForwardCycle;
-        private AnimatedSprite _runBackwardCycle;
-        private AnimatedSprite _runRightCycle;
+        private AnimatedSprite _moveForwardCycle;
+        private AnimatedSprite _moveBackwardCycle;
+        private AnimatedSprite _moveRightCycle;
 
         private AnimatedSprite _standForward;
         private AnimatedSprite _standBackward;
@@ -36,7 +36,9 @@ namespace MyGame {
         private readonly World _world;
         private readonly int hitboxWidth = 20;
 
-        public Player(Vector2 startPosition, float speed, string inventoryFilePath, World world)
+        private readonly ResourceManager _resourceManager;
+
+        public Player(Vector2 startPosition, float speed, string inventoryFilePath, World world, ResourceManager resourceManager)
             // : base(startPosition, speed)
         {
             _position = startPosition;
@@ -48,23 +50,26 @@ namespace MyGame {
 
             _previousKeyboardState = Keyboard.GetState();
             _world = world;
+
+            _resourceManager = resourceManager;
         }
 
-        public override void LoadContent(AsepriteFile aseFile, GraphicsDevice graphicsDevice) {
-            
-            SpriteSheet spriteSheet = aseFile.CreateSpriteSheet(graphicsDevice);
+        public void LoadContent() {
+            SpriteSheet spriteSheet = _resourceManager.LoadSprite("Character/character");
 
-            // Running animations
-            _runForwardCycle = spriteSheet.CreateAnimatedSprite("Run Forward");
-            _runBackwardCycle = spriteSheet.CreateAnimatedSprite("Run Backward");
-            _runRightCycle = spriteSheet.CreateAnimatedSprite("Run Right");
+            #region Running animations
+            _moveForwardCycle = spriteSheet.CreateAnimatedSprite("Move Forward");
+            _moveBackwardCycle = spriteSheet.CreateAnimatedSprite("Move Backward");
+            _moveRightCycle = spriteSheet.CreateAnimatedSprite("Move Right");
+            #endregion
 
-            // Standing animations
+            #region Standing animations
             _standForward = spriteSheet.CreateAnimatedSprite("Stand Forward");
             _standBackward = spriteSheet.CreateAnimatedSprite("Stand Backward");
             _standRight = spriteSheet.CreateAnimatedSprite("Stand Right");
+            #endregion
 
-            _currentAnimation = _runForwardCycle;
+            _currentAnimation = _moveForwardCycle;
         }
 
         public override void Update(GameTime gameTime) {
@@ -76,8 +81,7 @@ namespace MyGame {
             }
 
             // Only handle movement if the inventory is not open
-            if (!_showInventory)
-            {
+            if (!_showInventory) {
                 HandleMovement(gameTime, keyboardState);
             }
 
@@ -92,28 +96,28 @@ namespace MyGame {
             if (keyboardState.IsKeyDown(Keys.W) || keyboardState.IsKeyDown(Keys.Up))
             {
                 movement.Y -= _speed * (float)gameTime.ElapsedGameTime.TotalSeconds;
-                _currentAnimation = _runBackwardCycle;
+                _currentAnimation = _moveBackwardCycle;
                 _currentAnimation.FlipHorizontally = false;
                 isMoving = true;
             }
             if (keyboardState.IsKeyDown(Keys.S) || keyboardState.IsKeyDown(Keys.Down))
             {
                 movement.Y += _speed * (float)gameTime.ElapsedGameTime.TotalSeconds;
-                _currentAnimation = _runForwardCycle;
+                _currentAnimation = _moveForwardCycle;
                 _currentAnimation.FlipHorizontally = false;
                 isMoving = true;
             }
             if (keyboardState.IsKeyDown(Keys.A) || keyboardState.IsKeyDown(Keys.Left))
             {
                 movement.X -= _speed * (float)gameTime.ElapsedGameTime.TotalSeconds;
-                _currentAnimation = _runRightCycle;
+                _currentAnimation = _moveRightCycle;
                 _currentAnimation.FlipHorizontally = true;
                 isMoving = true;
             }
             if (keyboardState.IsKeyDown(Keys.D) || keyboardState.IsKeyDown(Keys.Right))
             {
                 movement.X += _speed * (float)gameTime.ElapsedGameTime.TotalSeconds;
-                _currentAnimation = _runRightCycle;
+                _currentAnimation = _moveRightCycle;
                 _currentAnimation.FlipHorizontally = false;
                 isMoving = true;
             }
@@ -144,15 +148,15 @@ namespace MyGame {
             }
             else
             {
-                if (_currentAnimation == _runForwardCycle)
+                if (_currentAnimation == _moveForwardCycle)
                 {
                     _currentAnimation = _standForward;
                 }
-                else if (_currentAnimation == _runBackwardCycle)
+                else if (_currentAnimation == _moveBackwardCycle)
                 {
                     _currentAnimation = _standBackward;
                 }
-                else if (_currentAnimation == _runRightCycle && !_currentAnimation.FlipHorizontally)
+                else if (_currentAnimation == _moveRightCycle && !_currentAnimation.FlipHorizontally)
                 {
                     _currentAnimation = _standRight;
                     _currentAnimation.FlipHorizontally = false;
@@ -196,6 +200,11 @@ namespace MyGame {
         public void SetPosition(Vector2 newPosition)
         {
             _position = newPosition;
+        }
+
+        public override void LoadContent(AsepriteFile aseFile, GraphicsDevice graphicsDevice)
+        {
+            throw new System.NotImplementedException();
         }
     }
 }

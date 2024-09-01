@@ -70,7 +70,7 @@ namespace MyGame {
 
         private void LoadWarpPoints()
         {
-            _warpPointsDictionary = new Dictionary<Point, List<WarpPoint>>();
+            _warpPointsDictionary = [];
 
             var objectLayer = _tiledMap.GetLayer<TiledMapObjectLayer>("Warp");
             if (objectLayer != null)
@@ -100,7 +100,7 @@ namespace MyGame {
 
                     if (!_warpPointsDictionary.ContainsKey(tilePosition))
                     {
-                        _warpPointsDictionary[tilePosition] = new List<WarpPoint>();
+                        _warpPointsDictionary[tilePosition] = [];
                     }
                     _warpPointsDictionary[tilePosition].Add(warpPoint);
                 }

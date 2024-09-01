@@ -1,4 +1,4 @@
-﻿#define DEBUG
+﻿// #define DEBUG
 
 
 using System.IO;
@@ -24,6 +24,8 @@ namespace MyGame {
         private List<NPC> _npcs;
         private List<Slime> _monsters;
 
+        private ResourceManager _resourceManager;
+
 
         private World _world;
 
@@ -36,14 +38,15 @@ namespace MyGame {
 
         protected override void Initialize() {
             _camera = new Camera(GraphicsDevice.Viewport);
+            _resourceManager = new ResourceManager(Content, GraphicsDevice);
 
             base.Initialize();
         }
 
         protected override void LoadContent() {
 
-            _npcs = new List<NPC>();
-            _monsters = new List<Slime>();
+            _npcs = [];
+            _monsters = [];
 
             _spriteBatch = new SpriteBatch(GraphicsDevice);
 
@@ -56,11 +59,11 @@ namespace MyGame {
                 new Vector2(300, 300), 
                 100f, 
                 Path.Combine(Content.RootDirectory, "inventory.xml"),
-                _world
+                _world,
+                _resourceManager
             );
 
-            AsepriteFile aseFile = Content.Load<AsepriteFile>("Character/character");
-            _player.LoadContent(aseFile, GraphicsDevice);
+            _player.LoadContent();
 
             Slime _slimeMonster = new Slime(new Vector2(200, 200), 100f, _world);
             AsepriteFile slimeAseFile = Content.Load<AsepriteFile>("Monsters/slime");
