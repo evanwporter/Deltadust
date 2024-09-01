@@ -9,8 +9,7 @@ using MonoGame.Aseprite;
 namespace MyGame {
     public class Player : Entity
     {
-        private Vector2 _position;
-        private readonly float _speed;
+        private new readonly float _speed = 100f;
         private AnimatedSprite _moveForwardCycle;
         private AnimatedSprite _moveBackwardCycle;
         private AnimatedSprite _moveRightCycle;
@@ -29,32 +28,18 @@ namespace MyGame {
                 return _showInventory;
             }
         }
-        private readonly string _inventoryFilePath;
-
         private KeyboardState _previousKeyboardState;
-
-        private readonly World _world;
         private readonly int hitboxWidth = 20;
 
-        private readonly ResourceManager _resourceManager;
-
-        public Player(Vector2 startPosition, float speed, string inventoryFilePath, World world, ResourceManager resourceManager)
-            // : base(startPosition, speed)
+        public Player(Vector2 startPosition, string inventoryFilePath, World world, ResourceManager resourceManager)
+            : base(startPosition, world, resourceManager)
         {
-            _position = startPosition;
-            _speed = speed;
-            _inventoryFilePath = inventoryFilePath;
-
-            _inventory = Inventory.LoadFromFile(_inventoryFilePath);
+            _inventory = Inventory.LoadFromFile(inventoryFilePath);
             _showInventory = false;
-
             _previousKeyboardState = Keyboard.GetState();
-            _world = world;
-
-            _resourceManager = resourceManager;
         }
 
-        public void LoadContent() {
+        public override void LoadContent() {
             SpriteSheet spriteSheet = _resourceManager.LoadSprite("Character/character");
 
             #region Running animations
@@ -195,16 +180,9 @@ namespace MyGame {
             spriteBatch.Draw(hitboxTexture, GetHitbox(_position), Color.Red * 0.5f);
         }
 
-        public Vector2 Position => _position;
-
         public void SetPosition(Vector2 newPosition)
         {
             _position = newPosition;
-        }
-
-        public override void LoadContent(AsepriteFile aseFile, GraphicsDevice graphicsDevice)
-        {
-            throw new System.NotImplementedException();
         }
     }
 }

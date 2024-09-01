@@ -1,54 +1,54 @@
 using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
-using Microsoft.Xna.Framework.Input;
-using AsepriteDotNet.Aseprite;
+
 using MonoGame.Aseprite;
+using System;
 
 namespace MyGame {
     public class NPC : Entity {
-        private Vector2 _position;
-        private AnimatedSprite _idleAnimation;
-        private AnimatedSprite _currentAnimation;
-        private readonly World _world;
-        private string _dialogue;
-        private bool _isInteracting;
 
-        public NPC(Vector2 startPosition, string dialogue, World world) {
-            _position = startPosition;
-            _dialogue = dialogue;
-            _world = world;
-            _isInteracting = false;
+        private string _name = "Lewis_Beach";
+
+        public NPC(Vector2 startPosition, World world, ResourceManager resourceManager)
+            : base(startPosition, world, resourceManager)
+        {
         }
 
-        public override void LoadContent(AsepriteFile aseFile, GraphicsDevice graphicsDevice) {
-            SpriteSheet spriteSheet = aseFile.CreateSpriteSheet(graphicsDevice);
-            _idleAnimation = spriteSheet.CreateAnimatedSprite("Stand Forward");
-            _currentAnimation = _idleAnimation;
+        public override void LoadContent() {
+            SpriteSheet spriteSheet = _resourceManager.LoadSprite(_name);
         }
 
-        public override void Update(GameTime gameTime) {
-            _currentAnimation.Play();
-            _currentAnimation.Update(gameTime);
-        }
+        // public void Interact(Player player) {
+        //     Rectangle playerHitbox = player.GetHitbox(player.Position);
+        //     Rectangle npcHitbox = GetHitbox(_position);
 
-        public void Interact(Player player) {
-            Rectangle playerHitbox = player.GetHitbox(player.Position);
-            Rectangle npcHitbox = GetHitbox(_position);
+        //     if (npcHitbox.Intersects(playerHitbox)) {
+        //         _isInteracting = true;
+        //     } else {
+        //         _isInteracting = false;
+        //     }
+        // }
 
-            if (npcHitbox.Intersects(playerHitbox)) {
-                _isInteracting = true;
-            } else {
-                _isInteracting = false;
-            }
-        }
+        // public override void Draw(SpriteBatch spriteBatch, SpriteFont font, Matrix viewMatrix) {
+        //     spriteBatch.Draw(_currentAnimation, _position);
 
-        public override void Draw(SpriteBatch spriteBatch, SpriteFont font, Matrix viewMatrix) {
-            spriteBatch.Draw(_currentAnimation, _position);
+        //     if (_isInteracting) {
+        //         Vector2 dialoguePosition = _position + new Vector2(0, -50); // Position the dialogue above the NPC
+        //         spriteBatch.DrawString(font, _dialogue, dialoguePosition, Color.White);
+        //     }
+        // }
 
-            if (_isInteracting) {
-                Vector2 dialoguePosition = _position + new Vector2(0, -50); // Position the dialogue above the NPC
-                spriteBatch.DrawString(font, _dialogue, dialoguePosition, Color.White);
-            }
+        protected Vector2 GetRandomDirection()
+        {
+            // Generate a random direction (e.g., for NPC or monsters)
+            Random random = new Random();
+            int direction = random.Next(4);
+            return direction switch
+            {
+                0 => new Vector2(1, 0), // Move right
+                1 => new Vector2(-1, 0), // Move left
+                2 => new Vector2(0, 1), // Move down
+                _ => new Vector2(0, -1), // Move up
+            };
         }
 
         private Rectangle GetHitbox(Vector2 position) {
@@ -59,7 +59,5 @@ namespace MyGame {
                 32  // Height of the hitbox
             );
         }
-
-        public Vector2 Position => _position;
     }
 }

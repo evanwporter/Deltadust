@@ -57,7 +57,6 @@ namespace MyGame {
 
             _player = new Player(
                 new Vector2(300, 300), 
-                100f, 
                 Path.Combine(Content.RootDirectory, "inventory.xml"),
                 _world,
                 _resourceManager
@@ -65,13 +64,11 @@ namespace MyGame {
 
             _player.LoadContent();
 
-            Slime _slimeMonster = new Slime(new Vector2(200, 200), 100f, _world);
-            AsepriteFile slimeAseFile = Content.Load<AsepriteFile>("Monsters/slime");
-            _slimeMonster.LoadContent(slimeAseFile, GraphicsDevice);
+            Slime _slimeMonster = new Slime(new Vector2(200, 200), _world, _resourceManager);
+            _slimeMonster.LoadContent();
 
-            NPC _npc = new NPC(new Vector2(400, 300), "Hello, traveler!", _world);
-            AsepriteFile npcAseFile = Content.Load<AsepriteFile>("Character/Lewis_Beach");
-            _npc.LoadContent(npcAseFile, GraphicsDevice);
+            Friendly _npc = new Friendly(new Vector2(400, 300), "Hello, traveler!", _world, _resourceManager);
+            _npc.LoadContent();
 
             _npcs.Add(_npc);
             _monsters.Add(_slimeMonster);
