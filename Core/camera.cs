@@ -1,7 +1,7 @@
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
-namespace MyGame {
+namespace Deltadust.Core {
     public class Camera
     {
         private readonly Viewport _viewport;

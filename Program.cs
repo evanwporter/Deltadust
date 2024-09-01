@@ -1,2 +1,2 @@
-﻿using var game = new MyGame.Game1();
+﻿using var game = new Deltadust.Core.Game1();
 game.Run();

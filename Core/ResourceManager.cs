@@ -6,7 +6,7 @@ using Microsoft.Xna.Framework.Graphics;
 using MonoGame.Aseprite;
 
 
-namespace MyGame {
+namespace Deltadust.Core {
     public class ResourceManager(ContentManager content, GraphicsDevice graphicsDevice) {
         private readonly ContentManager _content = content;
         private readonly GraphicsDevice _graphicsDevice = graphicsDevice;

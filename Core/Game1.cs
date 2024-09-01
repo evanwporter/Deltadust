@@ -8,11 +8,12 @@ using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 
 using MonoGame.Extended.Tiled;
-using AsepriteDotNet.Aseprite;
 using System.Collections.Generic;
+using Deltadust.World;
+using Deltadust.Entities;
 
 
-namespace MyGame {
+namespace Deltadust.Core {
     public class Game1 : Game {
         private GraphicsDeviceManager _graphics;
         private SpriteBatch _spriteBatch;
@@ -27,7 +28,7 @@ namespace MyGame {
         private ResourceManager _resourceManager;
 
 
-        private World _world;
+        private WorldEngine _world;
 
         public Game1() {
             _graphics = new GraphicsDeviceManager(this);
@@ -53,7 +54,7 @@ namespace MyGame {
             _font = Content.Load<SpriteFont>("Fonts/ArialFont");
 
             TiledMap tiledMap = Content.Load<TiledMap>("Maps/starter_island");
-            _world = new World(tiledMap, GraphicsDevice);
+            _world = new WorldEngine(tiledMap, GraphicsDevice);
 
             _player = new Player(
                 new Vector2(300, 300), 
@@ -140,7 +141,7 @@ namespace MyGame {
         {
             TiledMap newMap = Content.Load<TiledMap>(mapName);
 
-            _world = new World(newMap, GraphicsDevice);
+            _world = new WorldEngine(newMap, GraphicsDevice);
 
             _player.SetPosition(newPlayerPosition);
             _camera.Position = _player.Position - new Vector2(GraphicsDevice.Viewport.Width / 2, GraphicsDevice.Viewport.Height / 2) / _camera.Zoom;

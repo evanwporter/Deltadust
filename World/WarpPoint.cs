@@ -1,6 +1,6 @@
 using Microsoft.Xna.Framework;
 
-namespace MyGame {
+namespace Deltadust.World {
     public class WarpPoint {
         public string Name { get; set; }
         public string MapName { get; set; }

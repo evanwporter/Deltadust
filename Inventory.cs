@@ -4,7 +4,7 @@ using System.Xml.Serialization;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
-namespace MyGame {
+namespace Deltadust {
     [XmlRoot("Inventory")]
     public class Inventory
     {

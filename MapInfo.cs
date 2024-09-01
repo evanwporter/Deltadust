@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 
-namespace MyGame {
+namespace Deltadust {
         public class MapData {
         public string MapName { get; set; }
         public List<NPCData> NPCs { get; set; }

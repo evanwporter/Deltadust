@@ -1,13 +1,13 @@
-using System;
+using Deltadust.Core;
+using Deltadust.World;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
-using AsepriteDotNet.Aseprite;
 using MonoGame.Aseprite;
 
-namespace MyGame {
-    public class Slime : NPC {
-        private readonly float _speed = 50f;
+namespace Deltadust.Entities {
+    public class Slime(Vector2 startPosition, WorldEngine world, ResourceManager resourceManager) : NPC(startPosition, world, resourceManager) {
+        protected new readonly float _speed = 50f;
         private AnimatedSprite _moveAnimation;
         private AnimatedSprite _idleAnimation;
         private AnimatedSprite _currentAnimation;
@@ -16,10 +16,6 @@ namespace MyGame {
         private float _timeSinceLastDirectionChange;
         private readonly float _directionChangeInterval = 2.0f; // Change direction every 2 seconds
         private string _name = "Monsters/slime";
-
-
-        public Slime(Vector2 startPosition, World world, ResourceManager resourceManager)
-            : base(startPosition, world, resourceManager) {}
 
         public override void LoadContent() {
             SpriteSheet spriteSheet = _resourceManager.LoadSprite(_name);
@@ -82,7 +78,5 @@ namespace MyGame {
                 20  // Height of the hitbox
             );
         }
-
-        public Vector2 Position => _position;
     }
 }

@@ -1,23 +1,20 @@
+using Deltadust.Core;
+using Deltadust.World;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using Microsoft.Xna.Framework.Input;
 
-using AsepriteDotNet.Aseprite;
 using MonoGame.Aseprite;
 
-using MonoGame.Extended.Tiled;
-using MonoGame.Extended.Tiled.Renderers;
-
-namespace MyGame {
+namespace Deltadust.Entities {
     public abstract class Entity
     {
         protected Vector2 _position;
-        protected float _speed = 50f;
+        protected readonly float _speed;
         protected AnimatedSprite CurrentAnimation;
-        protected World _world;
+        protected WorldEngine _world;
         protected ResourceManager _resourceManager;
 
-        public Entity(Vector2 startPosition, World world, ResourceManager resourceManager)
+        public Entity(Vector2 startPosition, WorldEngine world, ResourceManager resourceManager)
         {
             _position = startPosition;
             _world = world;

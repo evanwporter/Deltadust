@@ -6,14 +6,14 @@ using Microsoft.Xna.Framework.Graphics;
 using MonoGame.Extended.Tiled;
 using MonoGame.Extended.Tiled.Renderers;
 
-namespace MyGame {
-    public class World {
+namespace Deltadust.World {
+    public class WorldEngine {
         private readonly TiledMap _tiledMap;
         private readonly TiledMapRenderer _tiledMapRenderer;
         private readonly TiledMapTileLayer _collisionLayer;
         private Dictionary<Point, List<WarpPoint>> _warpPointsDictionary;
 
-        public World(TiledMap tiledMap, GraphicsDevice graphicsDevice) {
+        public WorldEngine(TiledMap tiledMap, GraphicsDevice graphicsDevice) {
             _tiledMap = tiledMap;
             _tiledMapRenderer = new TiledMapRenderer(graphicsDevice, _tiledMap);
 

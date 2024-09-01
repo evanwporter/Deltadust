@@ -1,17 +1,18 @@
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
-using AsepriteDotNet.Aseprite;
 using MonoGame.Aseprite;
+using Deltadust.World;
+using Deltadust.Core;
 
-namespace MyGame {
+namespace Deltadust.Entities {
     public class Friendly : NPC {
         private AnimatedSprite _idleAnimation;
         private AnimatedSprite _currentAnimation;
         private string _dialogue;
         private bool _isInteracting;
 
-        public Friendly(Vector2 startPosition, string dialogue, World world, ResourceManager resourceManager)
+        public Friendly(Vector2 startPosition, string dialogue, WorldEngine world, ResourceManager resourceManager)
             : base(startPosition, world, resourceManager)
         {
             _dialogue = dialogue;

@@ -1,14 +1,16 @@
+using Deltadust.Core;
+using Deltadust.World;
 using Microsoft.Xna.Framework;
 
 using MonoGame.Aseprite;
 using System;
 
-namespace MyGame {
+namespace Deltadust.Entities {
     public class NPC : Entity {
 
         private string _name = "Lewis_Beach";
 
-        public NPC(Vector2 startPosition, World world, ResourceManager resourceManager)
+        public NPC(Vector2 startPosition, WorldEngine world, ResourceManager resourceManager)
             : base(startPosition, world, resourceManager)
         {
         }

@@ -1,12 +1,13 @@
+using Deltadust.Core;
+using Deltadust.World;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 
-using AsepriteDotNet.Aseprite;
 using MonoGame.Aseprite;
 
 
-namespace MyGame {
+namespace Deltadust.Entities {
     public class Player : Entity
     {
         private new readonly float _speed = 100f;
@@ -31,7 +32,7 @@ namespace MyGame {
         private KeyboardState _previousKeyboardState;
         private readonly int hitboxWidth = 20;
 
-        public Player(Vector2 startPosition, string inventoryFilePath, World world, ResourceManager resourceManager)
+        public Player(Vector2 startPosition, string inventoryFilePath, WorldEngine world, ResourceManager resourceManager)
             : base(startPosition, world, resourceManager)
         {
             _inventory = Inventory.LoadFromFile(inventoryFilePath);
