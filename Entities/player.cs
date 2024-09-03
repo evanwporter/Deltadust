@@ -22,7 +22,12 @@ namespace Deltadust.Entities {
         private AnimatedSprite _standBackward;
         private AnimatedSprite _standRight;
 
+        private AnimatedSprite _attackForward;
+        private AnimatedSprite _attackBackward;
+        private AnimatedSprite _attackRight;
+
         private AnimatedSprite _currentAnimation;
+        private AnimatedSprite _currentAttackAnimation;
 
         private readonly Inventory _inventory;
         private bool _showInventory;
@@ -44,21 +49,29 @@ namespace Deltadust.Entities {
         }
 
         public override void LoadContent() {
-            SpriteSheet spriteSheet = _resourceManager.LoadSprite("Character/character");
+            SpriteSheet characterSheet = _resourceManager.LoadSprite("Character/character");
+            SpriteSheet attackSheet = _resourceManager.LoadSprite("Character/swipe");
 
             #region Running animations
-            _moveForwardCycle = spriteSheet.CreateAnimatedSprite("Move Forward");
-            _moveBackwardCycle = spriteSheet.CreateAnimatedSprite("Move Backward");
-            _moveRightCycle = spriteSheet.CreateAnimatedSprite("Move Right");
+            _moveForwardCycle = characterSheet.CreateAnimatedSprite("Move Forward");
+            _moveBackwardCycle = characterSheet.CreateAnimatedSprite("Move Backward");
+            _moveRightCycle = characterSheet.CreateAnimatedSprite("Move Right");
             #endregion
 
             #region Standing animations
-            _standForward = spriteSheet.CreateAnimatedSprite("Stand Forward");
-            _standBackward = spriteSheet.CreateAnimatedSprite("Stand Backward");
-            _standRight = spriteSheet.CreateAnimatedSprite("Stand Right");
+            _standForward = characterSheet.CreateAnimatedSprite("Stand Forward");
+            _standBackward = characterSheet.CreateAnimatedSprite("Stand Backward");
+            _standRight = characterSheet.CreateAnimatedSprite("Stand Right");
+            #endregion
+
+            #region Attack animations
+            _attackForward = attackSheet.CreateAnimatedSprite("Forward Attack");
+            _attackBackward = attackSheet.CreateAnimatedSprite("Backward Attack");
+            _attackRight = attackSheet.CreateAnimatedSprite("Right Attack");
             #endregion
 
             _currentAnimation = _moveForwardCycle;
+            _currentAttackAnimation = null;
         }
 
         public override void Update(GameTime gameTime) {
@@ -72,6 +85,7 @@ namespace Deltadust.Entities {
             // Only handle movement if the inventory is not open
             if (!_showInventory) {
                 HandleMovement(gameTime, keyboardState);
+                HandleAttack(gameTime, keyboardState);
             }
 
             _previousKeyboardState = keyboardState;
@@ -113,21 +127,17 @@ namespace Deltadust.Entities {
 
             Vector2 newPosition = Position + new Vector2(movement.X, 0);
             Rectangle playerHitbox = GetHitbox(newPosition);
-            if (!_world.IsCollidingWithTile(playerHitbox))
-            {
+            if (!_world.IsCollidingWithTile(playerHitbox)) {
                 _position.X = newPosition.X;
             }
 
             newPosition = Position + new Vector2(0, movement.Y);
             playerHitbox = GetHitbox(newPosition);
-            if (!_world.IsCollidingWithTile(playerHitbox))
-            {
+            if (!_world.IsCollidingWithTile(playerHitbox)) {
                 _position.Y = newPosition.Y;
             }
 
-
-            if (isMoving)
-            {
+            if (isMoving) {
                 if (!_world.IsCollidingWithTile(playerHitbox))
                 {
                     _position = newPosition;
@@ -135,10 +145,8 @@ namespace Deltadust.Entities {
                 _currentAnimation.Play();
                 _currentAnimation.Update(gameTime);
             }
-            else
-            {
-                if (_currentAnimation == _moveForwardCycle)
-                {
+            else {
+                if (_currentAnimation == _moveForwardCycle) {
                     _currentAnimation = _standForward;
                 }
                 else if (_currentAnimation == _moveBackwardCycle)
@@ -159,6 +167,44 @@ namespace Deltadust.Entities {
             }
         }
 
+        private void HandleAttack(GameTime gameTime, KeyboardState keyboardState)
+        {
+            // Check if the attack key is pressed and an attack is not already in progress
+            if (keyboardState.IsKeyDown(Keys.T) && _currentAttackAnimation == null)
+            {
+                if (_currentAnimation == _moveForwardCycle || _currentAnimation == _standForward)
+                {
+                    _currentAttackAnimation = _attackForward;
+                }
+                else if (_currentAnimation == _moveBackwardCycle || _currentAnimation == _standBackward)
+                {
+                    _currentAttackAnimation = _attackBackward;
+                }
+                else if (_currentAnimation == _moveRightCycle || _currentAnimation == _standRight)
+                {
+                    _currentAttackAnimation = _attackRight;
+                    _currentAttackAnimation.FlipHorizontally = _currentAnimation.FlipHorizontally;
+                }
+
+                // Start the attack animation
+                _currentAttackAnimation.Play(1); // Play the attack animation once
+            }
+
+            // Update the attack animation if it is currently playing
+            if (_currentAttackAnimation != null)
+            {
+                _currentAttackAnimation.Update(gameTime);
+
+                // Reset the attack animation after it completes
+                if (!_currentAttackAnimation.IsAnimating)
+                {
+                    _currentAttackAnimation = null;
+                }
+            }
+        }
+
+
+
         public Rectangle GetHitbox(Vector2 position)
         {
             return new Rectangle(
@@ -172,6 +218,32 @@ namespace Deltadust.Entities {
         public override void Draw(SpriteBatch spriteBatch, SpriteFont font, Matrix viewMatrix)
         {
             spriteBatch.Draw(_currentAnimation, _position);
+            if (_currentAttackAnimation != null) {
+
+                Vector2 drawPosition = _position;
+                Vector2 attackOffset = Vector2.Zero;
+
+                if (_currentAttackAnimation == _attackRight && !_currentAttackAnimation.FlipHorizontally)
+                {
+                    attackOffset.X = -16;
+                }
+                else if (_currentAttackAnimation == _attackRight && _currentAttackAnimation.FlipHorizontally)
+                {
+                    attackOffset.X = -16;
+                }
+                else if (_currentAttackAnimation == _attackForward)
+                {
+                    attackOffset.X = -16; 
+                }
+                else if (_currentAttackAnimation == _attackBackward) {
+                    attackOffset.X = -24; 
+                    attackOffset.Y = -8;
+                }
+
+                drawPosition += attackOffset;
+                spriteBatch.Draw(_currentAttackAnimation, drawPosition);
+
+            }
 
             if (_showInventory)
             {

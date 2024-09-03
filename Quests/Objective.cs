@@ -1,6 +1,5 @@
 using System;
 using Deltadust.Events;
-using Microsoft.Xna.Framework;
 
 namespace Deltadust.Quests {
     [Serializable]

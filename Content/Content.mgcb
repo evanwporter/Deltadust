@@ -33,6 +33,12 @@
 /processorParam:PremultiplyAlpha=True
 /build:Character/Lewis_Beach.aseprite
 
+#begin Character/swipe.aseprite
+/importer:AsepriteFileContentImporter
+/processor:AsepriteFileContentProcessor
+/processorParam:PremultiplyAlpha=True
+/build:Character/swipe.aseprite
+
 #begin Fonts/ArialFont.png
 /importer:TextureImporter
 /processor:FontTextureProcessor

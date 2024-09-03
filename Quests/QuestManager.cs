@@ -8,12 +8,12 @@ using Newtonsoft.Json;
 namespace Deltadust.Quests {
     public class QuestManager
     {
-        private List<Quest> _quests;
+        private readonly List<Quest> _quests;
         private readonly RewardManager _rewardManager;
 
         public QuestManager()
         {
-            _quests = new List<Quest>();
+            _quests = [];
             _rewardManager = new RewardManager(); // Initialize the RewardManager
         }
 
@@ -45,10 +45,7 @@ namespace Deltadust.Quests {
 
         public void StartQuest(int questId) {
             var quest = _quests.FirstOrDefault(q => q.Id == questId);
-            if (quest != null)
-            {
-                quest.Start();
-            }
+            quest?.Start();
         }
 
         public void UpdateQuestProgress(ObjectiveType objectiveType, int value) {
@@ -58,29 +55,25 @@ namespace Deltadust.Quests {
             }
         }
 
-        private void QuestStarted(object sender, EventArgs e)
-        {
+        private void QuestStarted(object sender, EventArgs e) {
             Quest quest = (Quest)sender;
             System.Diagnostics.Debug.WriteLine($"Quest Started: {quest.Name}");
             // TODO
         }
 
-        private void QuestProgressed(object sender, EventArgs e)
-        {
+        private void QuestProgressed(object sender, EventArgs e) {
             Quest quest = (Quest)sender;
             System.Diagnostics.Debug.WriteLine($"Quest Progressed: {quest.Name}");
             // Update game state, UI, etc.
         }
 
-        private void QuestObjectivesComplete(object sender, EventArgs e)
-        {
+        private void QuestObjectivesComplete(object sender, EventArgs e) {
             Quest quest = (Quest)sender;
             System.Diagnostics.Debug.WriteLine($"Quest Objectives Complete: {quest.Name}");
             // TODO: When all objectives are complete call QuestCompleted
         }
 
-        private void QuestCompleted(object sender, EventArgs e)
-        {
+        private void QuestCompleted(object sender, EventArgs e) {
             Quest quest = (Quest)sender;
             System.Diagnostics.Debug.WriteLine($"Quest Completed: {quest.Name}");
 

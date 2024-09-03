@@ -46,7 +46,7 @@ namespace Deltadust.ItemManagement {
             }
             else
             {
-                return new Inventory(); // Return an empty inventory if the file doesn't exist
+                return new Inventory();
             }
         }
 
