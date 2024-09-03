@@ -2,11 +2,12 @@ using System;
 using Deltadust.Events;
 using Microsoft.Xna.Framework;
 
-namespace Deltadust {
+namespace Deltadust.Quests {
     [Serializable]
     public class Objective
     {
         public ObjectiveType Type {get; set;}
+        public int ID {get; set;}
         public int ObjectiveInt {get; set;}
         public int Progress {get; set;}
         public int Specifier {get; set;} // For monster quests where you need to kill a certain type, should be ID

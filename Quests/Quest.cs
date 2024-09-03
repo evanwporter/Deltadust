@@ -4,7 +4,7 @@ using System.Linq;
 using Microsoft.Xna.Framework;
 
 
-namespace Deltadust {
+namespace Deltadust.Quests {
     public delegate void QuestEventHandler(object sender, EventArgs e);
 
     [Serializable]

@@ -2,9 +2,10 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+
 using Newtonsoft.Json;
 
-namespace Deltadust {
+namespace Deltadust.Quests {
     public class QuestManager
     {
         private List<Quest> _quests;

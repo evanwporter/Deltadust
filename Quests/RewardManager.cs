@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace Deltadust {
+namespace Deltadust.Quests {
     public class RewardManager
     {
         private readonly Dictionary<RewardType, Action<Reward>> _rewardActions;
