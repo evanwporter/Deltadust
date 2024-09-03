@@ -169,8 +169,18 @@ namespace Deltadust.Entities {
 
         private void HandleAttack(GameTime gameTime, KeyboardState keyboardState)
         {
-            // Check if the attack key is pressed and an attack is not already in progress
-            if (keyboardState.IsKeyDown(Keys.T) && _currentAttackAnimation == null)
+            if (_currentAttackAnimation != null)
+            {
+                _currentAttackAnimation.Update(gameTime);
+
+                if (!_currentAttackAnimation.IsAnimating)
+                {
+                    _currentAttackAnimation = null;
+                }
+                return; 
+            }
+
+            if (keyboardState.IsKeyDown(Keys.T))
             {
                 if (_currentAnimation == _moveForwardCycle || _currentAnimation == _standForward)
                 {
@@ -185,26 +195,10 @@ namespace Deltadust.Entities {
                     _currentAttackAnimation = _attackRight;
                     _currentAttackAnimation.FlipHorizontally = _currentAnimation.FlipHorizontally;
                 }
-
-                // Start the attack animation
-                _currentAttackAnimation.Play(1); // Play the attack animation once
-            }
-
-            // Update the attack animation if it is currently playing
-            if (_currentAttackAnimation != null)
-            {
-                _currentAttackAnimation.Update(gameTime);
-
-                // Reset the attack animation after it completes
-                if (!_currentAttackAnimation.IsAnimating)
-                {
-                    _currentAttackAnimation = null;
-                }
+                _currentAttackAnimation.Play(1);
             }
         }
-
-
-
+        
         public Rectangle GetHitbox(Vector2 position)
         {
             return new Rectangle(
