@@ -4,6 +4,7 @@ using Microsoft.Xna.Framework.Graphics;
 using MonoGame.Aseprite;
 using Deltadust.World;
 using Deltadust.Core;
+using Deltadust.Events;
 
 namespace Deltadust.Entities {
     public class Friendly : NPC {
@@ -12,8 +13,8 @@ namespace Deltadust.Entities {
         private string _dialogue;
         private bool _isInteracting;
 
-        public Friendly(Vector2 startPosition, string dialogue, WorldEngine world, ResourceManager resourceManager)
-            : base(startPosition, world, resourceManager)
+        public Friendly(Vector2 startPosition, string dialogue, WorldEngine world, ResourceManager resourceManager, CentralEventHandler eventHandler)
+            : base(startPosition, world, resourceManager, eventHandler)
         {
             _dialogue = dialogue;
         }

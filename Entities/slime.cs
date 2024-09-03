@@ -1,4 +1,5 @@
 using Deltadust.Core;
+using Deltadust.Events;
 using Deltadust.World;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
@@ -6,7 +7,8 @@ using Microsoft.Xna.Framework.Graphics;
 using MonoGame.Aseprite;
 
 namespace Deltadust.Entities {
-    public class Slime(Vector2 startPosition, WorldEngine world, ResourceManager resourceManager) : NPC(startPosition, world, resourceManager) {
+    public class Slime(Vector2 startPosition, WorldEngine world, ResourceManager resourceManager, CentralEventHandler eventHandler) 
+        : NPC(startPosition, world, resourceManager, eventHandler) {
         protected new readonly float _speed = 50f;
         private AnimatedSprite _moveAnimation;
         private AnimatedSprite _idleAnimation;
@@ -15,10 +17,11 @@ namespace Deltadust.Entities {
         private Vector2 _movementDirection;
         private float _timeSinceLastDirectionChange;
         private readonly float _directionChangeInterval = 2.0f; // Change direction every 2 seconds
-        private string _name = "Monsters/slime";
+        public string Name = "Monsters/slime";
+        public int ID_Name = 1;
 
         public override void LoadContent() {
-            SpriteSheet spriteSheet = _resourceManager.LoadSprite(_name);
+            SpriteSheet spriteSheet = _resourceManager.LoadSprite(Name);
 
             // Load animations
             _moveAnimation = spriteSheet.CreateAnimatedSprite("Jump");

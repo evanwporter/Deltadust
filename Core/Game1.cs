@@ -11,6 +11,7 @@ using MonoGame.Extended.Tiled;
 using System.Collections.Generic;
 using Deltadust.World;
 using Deltadust.Entities;
+using Deltadust.Events;
 
 
 namespace Deltadust.Core {
@@ -27,8 +28,11 @@ namespace Deltadust.Core {
 
         private ResourceManager _resourceManager;
 
+        private QuestManager _questManager;
 
         private WorldEngine _world;
+
+        private CentralEventHandler _eventHandler;
 
         public Game1() {
             _graphics = new GraphicsDeviceManager(this);
@@ -40,6 +44,8 @@ namespace Deltadust.Core {
         protected override void Initialize() {
             _camera = new Camera(GraphicsDevice.Viewport);
             _resourceManager = new ResourceManager(Content, GraphicsDevice);
+            _questManager = new QuestManager();
+            _eventHandler = new CentralEventHandler();
 
             base.Initialize();
         }
@@ -60,15 +66,16 @@ namespace Deltadust.Core {
                 new Vector2(300, 300), 
                 Path.Combine(Content.RootDirectory, "inventory.xml"),
                 _world,
-                _resourceManager
+                _resourceManager,
+                _eventHandler
             );
 
             _player.LoadContent();
 
-            Slime _slimeMonster = new Slime(new Vector2(200, 200), _world, _resourceManager);
+            Slime _slimeMonster = new Slime(new Vector2(200, 200), _world, _resourceManager, _eventHandler);
             _slimeMonster.LoadContent();
 
-            Friendly _npc = new Friendly(new Vector2(400, 300), "Hello, traveler!", _world, _resourceManager);
+            Friendly _npc = new Friendly(new Vector2(400, 300), "Hello, traveler!", _world, _resourceManager, _eventHandler);
             _npc.LoadContent();
 
             _npcs.Add(_npc);

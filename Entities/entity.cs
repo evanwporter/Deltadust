@@ -1,4 +1,5 @@
 using Deltadust.Core;
+using Deltadust.Events;
 using Deltadust.World;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
@@ -13,12 +14,16 @@ namespace Deltadust.Entities {
         protected AnimatedSprite CurrentAnimation;
         protected WorldEngine _world;
         protected ResourceManager _resourceManager;
+        private readonly CentralEventHandler _eventHandler;
 
-        public Entity(Vector2 startPosition, WorldEngine world, ResourceManager resourceManager)
+
+
+        public Entity(Vector2 startPosition, WorldEngine world, ResourceManager resourceManager, CentralEventHandler eventHandler)
         {
             _position = startPosition;
             _world = world;
             _resourceManager = resourceManager;
+            _eventHandler = eventHandler;
         }
 
         public abstract void LoadContent();

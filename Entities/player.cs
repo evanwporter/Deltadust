@@ -1,4 +1,5 @@
 using Deltadust.Core;
+using Deltadust.Events;
 using Deltadust.World;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
@@ -32,8 +33,8 @@ namespace Deltadust.Entities {
         private KeyboardState _previousKeyboardState;
         private readonly int hitboxWidth = 20;
 
-        public Player(Vector2 startPosition, string inventoryFilePath, WorldEngine world, ResourceManager resourceManager)
-            : base(startPosition, world, resourceManager)
+        public Player(Vector2 startPosition, string inventoryFilePath, WorldEngine world, ResourceManager resourceManager, CentralEventHandler eventHandler)
+            : base(startPosition, world, resourceManager, eventHandler)
         {
             _inventory = Inventory.LoadFromFile(inventoryFilePath);
             _showInventory = false;
