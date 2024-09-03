@@ -91,8 +91,7 @@ namespace Deltadust.Entities {
             _previousKeyboardState = keyboardState;
         }
 
-        private void HandleMovement(GameTime gameTime, KeyboardState keyboardState)
-        {
+        private void HandleMovement(GameTime gameTime, KeyboardState keyboardState) {
             bool isMoving = false;
             Vector2 movement = Vector2.Zero;
 
@@ -125,46 +124,49 @@ namespace Deltadust.Entities {
                 isMoving = true;
             }
 
-            Vector2 newPosition = Position + new Vector2(movement.X, 0);
-            Rectangle playerHitbox = GetHitbox(newPosition);
-            if (!_world.IsColliding(playerHitbox)) {
-                _position.X = newPosition.X;
-            }
-
-            newPosition = Position + new Vector2(0, movement.Y);
-            playerHitbox = GetHitbox(newPosition);
-            if (!_world.IsColliding(playerHitbox)) {
-                _position.Y = newPosition.Y;
-            }
-
-            if (isMoving) {
-                if (!_world.IsColliding(playerHitbox))
+            if (isMoving)
+            {
+                Vector2 newPositionX = Position + new Vector2(movement.X, 0);
+                Rectangle playerHitboxX = GetHitbox(newPositionX);
+                
+                // Early exit if collision is detected
+                if (!_world.IsColliding(playerHitboxX))
                 {
-                    _position = newPosition;
+                    _position.X = newPositionX.X;
                 }
+
+                Vector2 newPositionY = Position + new Vector2(0, movement.Y);
+                Rectangle playerHitboxY = GetHitbox(newPositionY);
+                
+                if (!_world.IsColliding(playerHitboxY))
+                {
+                    _position.Y = newPositionY.Y;
+                }
+
                 _currentAnimation.Play();
                 _currentAnimation.Update(gameTime);
             }
-            else {
-                if (_currentAnimation == _moveForwardCycle) {
-                    _currentAnimation = _standForward;
-                }
-                else if (_currentAnimation == _moveBackwardCycle)
-                {
-                    _currentAnimation = _standBackward;
-                }
-                else if (_currentAnimation == _moveRightCycle && !_currentAnimation.FlipHorizontally)
-                {
-                    _currentAnimation = _standRight;
-                    _currentAnimation.FlipHorizontally = false;
-                }
-                else if (_currentAnimation.FlipHorizontally)
-                {
-                    _currentAnimation = _standRight;
-                    _currentAnimation.FlipHorizontally = true;
-                }
-                _currentAnimation.Play();
+            else
+            {
+                SwitchToIdleAnimation();
             }
+        }
+
+        private void SwitchToIdleAnimation()
+        {
+            if (_currentAnimation == _moveForwardCycle)
+            {
+                _currentAnimation = _standForward;
+            }
+            else if (_currentAnimation == _moveBackwardCycle)
+            {
+                _currentAnimation = _standBackward;
+            }
+            else if (_currentAnimation == _moveRightCycle)
+            {
+                _currentAnimation = _standRight;
+            }
+            _currentAnimation.Play();
         }
 
         private void HandleAttack(GameTime gameTime, KeyboardState keyboardState)

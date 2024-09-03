@@ -132,14 +132,15 @@ namespace Deltadust.Core {
 
             _world.Draw(_spriteBatch, viewMatrix);
 
-            _player.Draw(_spriteBatch, _font, viewMatrix);
+            var entities = new List<Entity>(_npcs.Count + _monsters.Count + 1);
+            entities.AddRange(_npcs);
+            entities.AddRange(_monsters);
+            entities.Add(_player);
 
-            foreach (var npc in _npcs) {
-                npc.Draw(_spriteBatch, _font, viewMatrix);
-            }
+            entities.Sort((a, b) => a.Position.Y.CompareTo(b.Position.Y));
 
-            foreach (var monster in _monsters) {
-                monster.Draw(_spriteBatch, _font, viewMatrix);
+            foreach (var entity in entities) {
+                entity.Draw(_spriteBatch, _font, viewMatrix);
             }
 
             _spriteBatch.End();
