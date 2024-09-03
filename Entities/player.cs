@@ -1,6 +1,8 @@
 using Deltadust.Core;
 using Deltadust.Events;
 using Deltadust.World;
+using Deltadust.ItemManagement;
+
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;

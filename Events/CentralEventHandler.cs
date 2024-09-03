@@ -1,8 +1,7 @@
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+
 using Deltadust.Entities;
+using Deltadust.ItemManagement;
 
 namespace Deltadust.Events
 {
@@ -17,5 +16,9 @@ namespace Deltadust.Events
 
     public class MonsterKillEventArgs : EventArgs {
         public Slime Monster { get; set; }
+    }
+
+    public class ItemFoundEventArgs : EventArgs {
+        public Item Item { get; set; }
     }
 }

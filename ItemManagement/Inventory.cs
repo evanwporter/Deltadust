@@ -4,25 +4,25 @@ using System.Xml.Serialization;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
-namespace Deltadust {
+namespace Deltadust.ItemManagement {
     [XmlRoot("Inventory")]
     public class Inventory
     {
         [XmlArray("Items")]
         [XmlArrayItem("Item")]
-        private List<string> Items { get; set; }
+        private List<Item> Items { get; set; }
 
         public Inventory()
         {
             Items = [];
         }
 
-        public void AddItem(string item)
+        public void AddItem(Item item)
         {
             Items.Add(item);
         }
 
-        public void RemoveItem(string item)
+        public void RemoveItem(Item item)
         {
             Items.Remove(item);
         }
@@ -58,9 +58,8 @@ namespace Deltadust {
             spriteBatch.DrawString(font, "Inventory:", position, Color.White);
             position.Y += 30;
 
-            foreach (string item in Items)
-            {
-                spriteBatch.DrawString(font, item, position, Color.White);
+            foreach (Item item in Items) {
+                spriteBatch.DrawString(font, item.ToString(), position, Color.White);
                 position.Y += 30;
             }
         }
