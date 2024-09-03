@@ -75,8 +75,8 @@ namespace Deltadust.Entities {
         public new Rectangle GetHitbox(Vector2 position)
         {
             return new Rectangle(
-                (int)(_position.X + 10), // Adjust the hitbox position and size as needed
-                (int)(_position.Y + 10),
+                (int)(position.X + 10), // Adjust the hitbox position and size as needed
+                (int)(position.Y + 10),
                 20, // Width of the hitbox
                 20  // Height of the hitbox
             );

@@ -127,18 +127,18 @@ namespace Deltadust.Entities {
 
             Vector2 newPosition = Position + new Vector2(movement.X, 0);
             Rectangle playerHitbox = GetHitbox(newPosition);
-            if (!_world.IsCollidingWithTile(playerHitbox)) {
+            if (!_world.IsColliding(playerHitbox)) {
                 _position.X = newPosition.X;
             }
 
             newPosition = Position + new Vector2(0, movement.Y);
             playerHitbox = GetHitbox(newPosition);
-            if (!_world.IsCollidingWithTile(playerHitbox)) {
+            if (!_world.IsColliding(playerHitbox)) {
                 _position.Y = newPosition.Y;
             }
 
             if (isMoving) {
-                if (!_world.IsCollidingWithTile(playerHitbox))
+                if (!_world.IsColliding(playerHitbox))
                 {
                     _position = newPosition;
                 }

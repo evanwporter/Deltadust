@@ -14,6 +14,8 @@ namespace Deltadust.Entities {
         public event DeathEventHandler OnKilled;
 
         private string _name = "Lewis_Beach";
+        
+        private readonly int hitboxWidth = 20;
 
         public NPC(Vector2 startPosition, WorldEngine world, ResourceManager resourceManager, CentralEventHandler eventHandler)
             : base(startPosition, world, resourceManager, eventHandler)
@@ -62,12 +64,13 @@ namespace Deltadust.Entities {
             OnKilled?.Invoke(this, EventArgs.Empty);
         }
 
-        public Rectangle GetHitbox(Vector2 position) {
+        public Rectangle GetHitbox(Vector2 position)
+        {
             return new Rectangle(
-                (int)position.X,
-                (int)position.Y,
-                32, // Width of the hitbox
-                32  // Height of the hitbox
+                (int)(position.X + ((32 - hitboxWidth) / 2)),
+                (int)(position.Y + 32 + 32 - 20),
+                hitboxWidth,
+                20
             );
         }
     }

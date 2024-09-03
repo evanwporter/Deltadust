@@ -16,8 +16,6 @@ namespace Deltadust.Entities {
         protected ResourceManager _resourceManager;
         private readonly CentralEventHandler _eventHandler;
 
-
-
         public Entity(Vector2 startPosition, WorldEngine world, ResourceManager resourceManager, CentralEventHandler eventHandler)
         {
             _position = startPosition;

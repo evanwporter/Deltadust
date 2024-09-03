@@ -94,6 +94,10 @@ namespace Deltadust.World {
             return false;
         }
 
+        public bool IsColliding(Rectangle playerHitbox) {
+            return IsCollidingWithEntities(playerHitbox) || IsCollidingWithTile(playerHitbox);
+        }
+
 
         private void LoadWarpPoints()
         {
