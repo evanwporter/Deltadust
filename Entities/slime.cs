@@ -72,7 +72,7 @@ namespace Deltadust.Entities {
         //     };
         // }
 
-        private Rectangle GetHitbox(Vector2 position)
+        public new Rectangle GetHitbox(Vector2 position)
         {
             return new Rectangle(
                 (int)(_position.X + 10), // Adjust the hitbox position and size as needed

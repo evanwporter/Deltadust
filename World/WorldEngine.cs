@@ -1,5 +1,5 @@
 using System.Collections.Generic;
-
+using Deltadust.Entities;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
@@ -12,8 +12,10 @@ namespace Deltadust.World {
         private readonly TiledMapRenderer _tiledMapRenderer;
         private readonly TiledMapTileLayer _collisionLayer;
         private Dictionary<Point, List<WarpPoint>> _warpPointsDictionary;
+        public List<NPC> NPCs { get; private set; }
+        public List<Slime> Monsters { get; private set; }
 
-        public WorldEngine(TiledMap tiledMap, GraphicsDevice graphicsDevice) {
+        public WorldEngine(TiledMap tiledMap, GraphicsDevice graphicsDevice, List<NPC> npcs, List<Slime> monsters) {
             _tiledMap = tiledMap;
             _tiledMapRenderer = new TiledMapRenderer(graphicsDevice, _tiledMap);
 
@@ -31,6 +33,10 @@ namespace Deltadust.World {
             #endif
 
             LoadWarpPoints();
+
+            // TODO Fully move these into WorldEngine
+            NPCs = npcs;
+            Monsters = monsters;
 
         }
         public void Update(GameTime gameTime) {
@@ -67,6 +73,27 @@ namespace Deltadust.World {
 
             return false;
         }
+
+        public bool IsCollidingWithEntities(Rectangle playerHitbox) {
+            foreach (var npc in NPCs) {
+                if (playerHitbox.Intersects(npc.GetHitbox(npc.Position))) {
+                    // Debugging output to check collisions with NPCs
+                    System.Diagnostics.Debug.WriteLine($"Colliding with NPC: {npc.GetType().Name} at {npc.Position}");
+                    return true;
+                }
+            }
+
+            foreach (var monster in Monsters) {
+                if (playerHitbox.Intersects(monster.GetHitbox(monster.Position))) {
+                    // Debugging output to check collisions with Monsters
+                    System.Diagnostics.Debug.WriteLine($"Colliding with Monster: {monster.GetType().Name} at {monster.Position}");
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
 
         private void LoadWarpPoints()
         {

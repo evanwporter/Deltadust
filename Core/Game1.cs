@@ -63,7 +63,7 @@ namespace Deltadust.Core {
             _font = Content.Load<SpriteFont>("Fonts/ArialFont");
 
             TiledMap tiledMap = Content.Load<TiledMap>("Maps/starter_island");
-            _world = new WorldEngine(tiledMap, GraphicsDevice);
+            _world = new WorldEngine(tiledMap, GraphicsDevice, _npcs, _monsters);
 
             _player = new Player(
                 new Vector2(300, 300), 
@@ -151,7 +151,7 @@ namespace Deltadust.Core {
         {
             TiledMap newMap = Content.Load<TiledMap>(mapName);
 
-            _world = new WorldEngine(newMap, GraphicsDevice);
+            _world = new WorldEngine(newMap, GraphicsDevice, _npcs, _monsters);
 
             _player.SetPosition(newPlayerPosition);
             _camera.Position = _player.Position - new Vector2(GraphicsDevice.Viewport.Width / 2, GraphicsDevice.Viewport.Height / 2) / _camera.Zoom;

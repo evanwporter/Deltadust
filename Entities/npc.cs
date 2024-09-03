@@ -62,7 +62,7 @@ namespace Deltadust.Entities {
             OnKilled?.Invoke(this, EventArgs.Empty);
         }
 
-        private Rectangle GetHitbox(Vector2 position) {
+        public Rectangle GetHitbox(Vector2 position) {
             return new Rectangle(
                 (int)position.X,
                 (int)position.Y,
