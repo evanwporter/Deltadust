@@ -12,12 +12,12 @@ namespace Deltadust.Entities {
         protected Vector2 _position;
         protected readonly float _speed;
         protected AnimatedSprite CurrentAnimation;
-        protected WorldEngine _map;
+        protected MapEngine _map;
         protected ResourceManager _resourceManager;
         private readonly CentralEventHandler _eventHandler;
         protected readonly int hitboxWidth = 20;
 
-        public Entity(Vector2 startPosition, WorldEngine map, ResourceManager resourceManager, CentralEventHandler eventHandler)
+        public Entity(Vector2 startPosition, MapEngine map, ResourceManager resourceManager, CentralEventHandler eventHandler)
         {
             _position = startPosition;
             _map = map;

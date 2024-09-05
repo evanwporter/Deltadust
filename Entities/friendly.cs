@@ -13,7 +13,7 @@ namespace Deltadust.Entities {
         private string _dialogue;
         private bool _isInteracting;
 
-        public Friendly(Vector2 startPosition, string dialogue, WorldEngine map, ResourceManager resourceManager, CentralEventHandler eventHandler)
+        public Friendly(Vector2 startPosition, string dialogue, MapEngine map, ResourceManager resourceManager, CentralEventHandler eventHandler)
             : base(startPosition, map, resourceManager, eventHandler)
         {
             _dialogue = dialogue;

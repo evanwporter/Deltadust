@@ -39,7 +39,7 @@ namespace Deltadust.Entities {
         }
         private KeyboardState _previousKeyboardState;
 
-        public Player(Vector2 startPosition, string inventoryFilePath, WorldEngine map, ResourceManager resourceManager, CentralEventHandler eventHandler)
+        public Player(Vector2 startPosition, string inventoryFilePath, MapEngine map, ResourceManager resourceManager, CentralEventHandler eventHandler)
             : base(startPosition, map, resourceManager, eventHandler)
         {
             _inventory = Inventory.LoadFromFile(inventoryFilePath);

@@ -4,6 +4,25 @@
         "."
     ],
     "fileStates": {
+        "": {
+            "scaleInDock": 1
+        },
+        "starter_island.tmx": {
+            "scale": 1.73375,
+            "selectedLayer": 2,
+            "viewCenter": {
+                "x": 48.16149963950974,
+                "y": 207.93078586878156
+            }
+        },
+        "starter_island.tmx#WarpPanel": {
+            "scaleInDock": 1,
+            "scaleInEditor": 1
+        },
+        "starter_island.tmx#fall_beach": {
+            "scaleInDock": 1,
+            "scaleInEditor": 1
+        },
         "starter_map.tmx": {
             "scale": 1.1307065217391306,
             "selectedLayer": 0,
@@ -16,9 +35,11 @@
             "scaleInDock": 1
         }
     },
+    "last.imagePath": "C:/Users/evanw/Deltadust/Content/Maps",
     "openFiles": [
     ],
     "project": "Deltadust.tiled-project",
     "recentFiles": [
-    ]
+    ],
+    "tileset.embedInMap": true
 }
