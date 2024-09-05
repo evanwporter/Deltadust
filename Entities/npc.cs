@@ -5,6 +5,7 @@ using Microsoft.Xna.Framework;
 
 using MonoGame.Aseprite;
 using System;
+using Microsoft.Xna.Framework.Graphics;
 
 namespace Deltadust.Entities {
     public delegate void DeathEventHandler(object sender, EventArgs e);
@@ -15,8 +16,6 @@ namespace Deltadust.Entities {
 
         private string _name = "Lewis_Beach";
         
-        private readonly int hitboxWidth = 20;
-
         public NPC(Vector2 startPosition, WorldEngine world, ResourceManager resourceManager, CentralEventHandler eventHandler)
             : base(startPosition, world, resourceManager, eventHandler)
         {
@@ -62,16 +61,6 @@ namespace Deltadust.Entities {
 
         public void Kill() {
             OnKilled?.Invoke(this, EventArgs.Empty);
-        }
-
-        public Rectangle GetHitbox(Vector2 position)
-        {
-            return new Rectangle(
-                (int)(position.X + ((32 - hitboxWidth) / 2)),
-                (int)(position.Y + 32 + 32 - 20),
-                hitboxWidth,
-                20
-            );
         }
     }
 }

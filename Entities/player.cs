@@ -38,8 +38,7 @@ namespace Deltadust.Entities {
             }
         }
         private KeyboardState _previousKeyboardState;
-        private readonly int hitboxWidth = 20;
-
+        
         public Player(Vector2 startPosition, string inventoryFilePath, WorldEngine world, ResourceManager resourceManager, CentralEventHandler eventHandler)
             : base(startPosition, world, resourceManager, eventHandler)
         {
@@ -129,7 +128,6 @@ namespace Deltadust.Entities {
                 Vector2 newPositionX = Position + new Vector2(movement.X, 0);
                 Rectangle playerHitboxX = GetHitbox(newPositionX);
                 
-                // Early exit if collision is detected
                 if (!_world.IsColliding(playerHitboxX))
                 {
                     _position.X = newPositionX.X;
@@ -146,8 +144,7 @@ namespace Deltadust.Entities {
                 _currentAnimation.Play();
                 _currentAnimation.Update(gameTime);
             }
-            else
-            {
+            else {
                 SwitchToIdleAnimation();
             }
         }
@@ -201,15 +198,15 @@ namespace Deltadust.Entities {
             }
         }
         
-        public Rectangle GetHitbox(Vector2 position)
-        {
-            return new Rectangle(
-                (int)(position.X + ((32 - hitboxWidth) / 2)),
-                (int)(position.Y + 32 + 32 - 20),
-                hitboxWidth,
-                20
-            );
-        }
+        // public Rectangle GetHitbox(Vector2 position)
+        // {
+        //     return new Rectangle(
+        //         (int)(position.X + ((32 - hitboxWidth) / 2)),
+        //         (int)(position.Y + 32 + 32 - 20),
+        //         hitboxWidth,
+        //         20
+        //     );
+        // }
 
         public override void Draw(SpriteBatch spriteBatch, SpriteFont font, Matrix viewMatrix)
         {
@@ -241,15 +238,14 @@ namespace Deltadust.Entities {
 
             }
 
+            #if DEBUG
+            DrawHitbox(spriteBatch);
+            #endif
+
             if (_showInventory)
             {
                 _inventory.Draw(spriteBatch, font, viewMatrix);
             }
-
-            Texture2D hitboxTexture = new(spriteBatch.GraphicsDevice, 1, 1);
-            hitboxTexture.SetData(new[] { Color.Red });
-
-            spriteBatch.Draw(hitboxTexture, GetHitbox(_position), Color.Red * 0.5f);
         }
 
         public void SetPosition(Vector2 newPosition)

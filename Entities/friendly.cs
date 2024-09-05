@@ -48,6 +48,10 @@ namespace Deltadust.Entities {
                 Vector2 dialoguePosition = _position + new Vector2(0, -50); // Position the dialogue above the NPC
                 spriteBatch.DrawString(font, _dialogue, dialoguePosition, Color.White);
             }
+
+            #if DEBUG
+            DrawHitbox(spriteBatch);
+            #endif
         }
 
         public new Rectangle GetHitbox(Vector2 position) {

@@ -1,5 +1,4 @@
-﻿// #define DEBUG
-
+﻿#define DEBUG
 
 using System.IO;
 
@@ -27,7 +26,6 @@ namespace Deltadust.Core {
 
         private Player _player;
         private List<NPC> _npcs;
-        private List<Slime> _monsters;
 
         private ResourceManager _resourceManager;
 
@@ -56,14 +54,13 @@ namespace Deltadust.Core {
         protected override void LoadContent() {
 
             _npcs = [];
-            _monsters = [];
 
             _spriteBatch = new SpriteBatch(GraphicsDevice);
 
             _font = Content.Load<SpriteFont>("Fonts/ArialFont");
 
             TiledMap tiledMap = Content.Load<TiledMap>("Maps/starter_island");
-            _world = new WorldEngine(tiledMap, GraphicsDevice, _npcs, _monsters);
+            _world = new WorldEngine(tiledMap, GraphicsDevice, _npcs);
 
             _player = new Player(
                 new Vector2(300, 300), 
@@ -82,7 +79,7 @@ namespace Deltadust.Core {
             _npc.LoadContent();
 
             _npcs.Add(_npc);
-            _monsters.Add(_slimeMonster);
+            _npcs.Add(_slimeMonster);
 
         }
 
@@ -95,10 +92,6 @@ namespace Deltadust.Core {
             if (!IsPaused()) {
                 foreach (var npc in _npcs) {
                     npc.Update(gameTime);
-                }
-
-                foreach (var monster in _monsters) {
-                    monster.Update(gameTime);
                 }
             }
 
@@ -132,9 +125,8 @@ namespace Deltadust.Core {
 
             _world.Draw(_spriteBatch, viewMatrix);
 
-            var entities = new List<Entity>(_npcs.Count + _monsters.Count + 1);
+            var entities = new List<Entity>(_npcs.Count + 1);
             entities.AddRange(_npcs);
-            entities.AddRange(_monsters);
             entities.Add(_player);
 
             entities.Sort((a, b) => a.Position.Y.CompareTo(b.Position.Y));
@@ -152,7 +144,7 @@ namespace Deltadust.Core {
         {
             TiledMap newMap = Content.Load<TiledMap>(mapName);
 
-            _world = new WorldEngine(newMap, GraphicsDevice, _npcs, _monsters);
+            _world = new WorldEngine(newMap, GraphicsDevice, _npcs);
 
             _player.SetPosition(newPlayerPosition);
             _camera.Position = _player.Position - new Vector2(GraphicsDevice.Viewport.Width / 2, GraphicsDevice.Viewport.Height / 2) / _camera.Zoom;
