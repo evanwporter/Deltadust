@@ -1,0 +1,24 @@
+{
+    "activeFile": "",
+    "expandedProjectPaths": [
+        "."
+    ],
+    "fileStates": {
+        "starter_map.tmx": {
+            "scale": 1.1307065217391306,
+            "selectedLayer": 0,
+            "viewCenter": {
+                "x": 208.27685652487384,
+                "y": 368.3537611151165
+            }
+        },
+        "starter_map.tmx#Desert_Oasis": {
+            "scaleInDock": 1
+        }
+    },
+    "openFiles": [
+    ],
+    "project": "Deltadust.tiled-project",
+    "recentFiles": [
+    ]
+}

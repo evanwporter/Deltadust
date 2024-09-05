@@ -16,8 +16,8 @@ namespace Deltadust.Entities {
 
         private string _name = "Lewis_Beach";
         
-        public NPC(Vector2 startPosition, WorldEngine world, ResourceManager resourceManager, CentralEventHandler eventHandler)
-            : base(startPosition, world, resourceManager, eventHandler)
+        public NPC(Vector2 startPosition, WorldEngine map, ResourceManager resourceManager, CentralEventHandler eventHandler)
+            : base(startPosition, map, resourceManager, eventHandler)
         {
         }
 

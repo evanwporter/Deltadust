@@ -1,4 +1,4 @@
-﻿#define DEBUG
+#define DEBUG
 
 using System.IO;
 
@@ -31,7 +31,7 @@ namespace Deltadust.Core {
 
         private QuestManager _questManager;
 
-        private WorldEngine _world;
+        private MapEngine _map;
 
         private CentralEventHandler _eventHandler;
 
@@ -60,22 +60,22 @@ namespace Deltadust.Core {
             _font = Content.Load<SpriteFont>("Fonts/ArialFont");
 
             TiledMap tiledMap = Content.Load<TiledMap>("Maps/starter_island");
-            _world = new WorldEngine(tiledMap, GraphicsDevice, _npcs);
+            _map = new WorldEngine(tiledMap, GraphicsDevice, _npcs);
 
             _player = new Player(
                 new Vector2(300, 300), 
                 Path.Combine(Content.RootDirectory, "inventory.xml"),
-                _world,
+                _map,
                 _resourceManager,
                 _eventHandler
             );
 
             _player.LoadContent();
 
-            Slime _slimeMonster = new Slime(new Vector2(200, 200), _world, _resourceManager, _eventHandler);
+            Slime _slimeMonster = new Slime(new Vector2(200, 200), _map, _resourceManager, _eventHandler);
             _slimeMonster.LoadContent();
 
-            Friendly _npc = new Friendly(new Vector2(400, 300), "Hello, traveler!", _world, _resourceManager, _eventHandler);
+            Friendly _npc = new Friendly(new Vector2(400, 300), "Hello, traveler!", _map, _resourceManager, _eventHandler);
             _npc.LoadContent();
 
             _npcs.Add(_npc);
@@ -95,7 +95,7 @@ namespace Deltadust.Core {
                 }
             }
 
-            var warpPoint = _world.CheckForWarp(_player.GetHitbox(_player.Position));
+            var warpPoint = _map.CheckForWarp(_player.GetHitbox(_player.Position));
             if (warpPoint != null) {
                 WarpToMap(warpPoint.MapName, warpPoint.TargetPosition);
             }
@@ -103,7 +103,7 @@ namespace Deltadust.Core {
             // Update the camera position to follow the player
             _camera.Position = _player.Position - new Vector2(GraphicsDevice.Viewport.Width / 2, GraphicsDevice.Viewport.Height / 2) / _camera.Zoom;
 
-            _world.Update(gameTime);
+            _map.Update(gameTime);
 
             base.Update(gameTime);
         }
@@ -123,7 +123,7 @@ namespace Deltadust.Core {
 
             _spriteBatch.Begin(transformMatrix: viewMatrix, samplerState: SamplerState.PointClamp);
 
-            _world.Draw(_spriteBatch, viewMatrix);
+            _map.Draw(_spriteBatch, viewMatrix);
 
             var entities = new List<Entity>(_npcs.Count + 1);
             entities.AddRange(_npcs);
@@ -144,7 +144,7 @@ namespace Deltadust.Core {
         {
             TiledMap newMap = Content.Load<TiledMap>(mapName);
 
-            _world = new WorldEngine(newMap, GraphicsDevice, _npcs);
+            _map = new WorldEngine(newMap, GraphicsDevice, _npcs);
 
             _player.SetPosition(newPlayerPosition);
             _camera.Position = _player.Position - new Vector2(GraphicsDevice.Viewport.Width / 2, GraphicsDevice.Viewport.Height / 2) / _camera.Zoom;

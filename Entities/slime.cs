@@ -7,8 +7,8 @@ using Microsoft.Xna.Framework.Graphics;
 using MonoGame.Aseprite;
 
 namespace Deltadust.Entities {
-    public class Slime(Vector2 startPosition, WorldEngine world, ResourceManager resourceManager, CentralEventHandler eventHandler) 
-        : NPC(startPosition, world, resourceManager, eventHandler) {
+    public class Slime(Vector2 startPosition, WorldEngine map, ResourceManager resourceManager, CentralEventHandler eventHandler) 
+        : NPC(startPosition, map, resourceManager, eventHandler) {
         protected new readonly float _speed = 50f;
         private AnimatedSprite _moveAnimation;
         private AnimatedSprite _idleAnimation;
@@ -44,7 +44,7 @@ namespace Deltadust.Entities {
 
             Vector2 newPosition = _position + movement;
             Rectangle slimeHitbox = GetHitbox(newPosition);
-            if (!_world.IsCollidingWithTile(slimeHitbox))
+            if (!_map.IsCollidingWithTile(slimeHitbox))
             {
                 _position = newPosition;
             }

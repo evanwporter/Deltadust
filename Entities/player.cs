@@ -38,9 +38,9 @@ namespace Deltadust.Entities {
             }
         }
         private KeyboardState _previousKeyboardState;
-        
-        public Player(Vector2 startPosition, string inventoryFilePath, WorldEngine world, ResourceManager resourceManager, CentralEventHandler eventHandler)
-            : base(startPosition, world, resourceManager, eventHandler)
+
+        public Player(Vector2 startPosition, string inventoryFilePath, WorldEngine map, ResourceManager resourceManager, CentralEventHandler eventHandler)
+            : base(startPosition, map, resourceManager, eventHandler)
         {
             _inventory = Inventory.LoadFromFile(inventoryFilePath);
             _showInventory = false;
@@ -128,7 +128,7 @@ namespace Deltadust.Entities {
                 Vector2 newPositionX = Position + new Vector2(movement.X, 0);
                 Rectangle playerHitboxX = GetHitbox(newPositionX);
                 
-                if (!_world.IsColliding(playerHitboxX))
+                if (!_map.IsColliding(playerHitboxX))
                 {
                     _position.X = newPositionX.X;
                 }
@@ -136,7 +136,7 @@ namespace Deltadust.Entities {
                 Vector2 newPositionY = Position + new Vector2(0, movement.Y);
                 Rectangle playerHitboxY = GetHitbox(newPositionY);
                 
-                if (!_world.IsColliding(playerHitboxY))
+                if (!_map.IsColliding(playerHitboxY))
                 {
                     _position.Y = newPositionY.Y;
                 }
