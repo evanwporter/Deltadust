@@ -7,6 +7,7 @@
         "": {
             "scaleInDock": 1
         },
+<<<<<<< HEAD
         "[A]Grass_pipo.tsx": {
             "scaleInDock": 1
         },
@@ -22,6 +23,14 @@
             "viewCenter": {
                 "x": 111.75,
                 "y": 304.25
+=======
+        "starter_island.tmx": {
+            "scale": 1.73375,
+            "selectedLayer": 2,
+            "viewCenter": {
+                "x": 48.16149963950974,
+                "y": 207.93078586878156
+>>>>>>> d853327d52949dffcb9318081b58941443519f6a
             }
         },
         "starter_island.tmx#WarpPanel": {
@@ -32,9 +41,12 @@
             "scaleInDock": 1,
             "scaleInEditor": 1
         },
+<<<<<<< HEAD
         "starter_island.tmx#fishing house": {
             "scaleInDock": 1
         },
+=======
+>>>>>>> d853327d52949dffcb9318081b58941443519f6a
         "starter_map.tmx": {
             "scale": 1.1307065217391306,
             "selectedLayer": 1,
