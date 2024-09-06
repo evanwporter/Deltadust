@@ -3,9 +3,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace Deltadust.Entities
+namespace Deltadust.Entities.Static
 {
-    public class StaticEntity : Entity {
+    public class TileEntity : StaticEntity
+    {
         
     }
 }
