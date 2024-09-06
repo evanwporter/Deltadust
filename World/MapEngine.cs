@@ -11,8 +11,6 @@ namespace Deltadust.World {
         private readonly TiledMap _tiledMap;
         private readonly TiledMapRenderer _tiledMapRenderer;
         private readonly TiledMapTileLayer _collisionLayer;
-        private readonly TiledMapTileLayer _groundLayer;
-        private readonly List<LayerData> _sortedLayers;
         private Dictionary<Point, List<WarpPoint>> _warpPointsDictionary;
         public List<NPC> NPCs { get; private set; }
 
@@ -22,9 +20,6 @@ namespace Deltadust.World {
 
             // Collision layer is named "Collisions"; need to change to something more general like Barriers
             _collisionLayer = _tiledMap.GetLayer<TiledMapTileLayer>("Barriers");
-
-            _sortedLayers = new List<LayerData>();
-            _groundLayer = _tiledMap.GetLayer<TiledMapTileLayer>("Ground");
 
             #if DEBUG
             if (_collisionLayer == null) {
@@ -157,41 +152,4 @@ namespace Deltadust.World {
 
 
     }
-
-    public class LayerData {
-        public TiledMapTileLayer Layer { get; }
-        public float YHeight { get; }
-
-        public LayerData(TiledMapTileLayer layer, float yHeight) {
-            Layer = layer;
-            YHeight = yHeight;
-        }
-    }
-
-    // public class DrawableObject {
-    //     private readonly TiledMapTileLayer _layer;
-    //     private readonly NPC _npc;
-    //     public float Y { get; }
-
-    //     public DrawableObject(TiledMapTileLayer layer, float y) {
-    //         _layer = layer;
-    //         Y = y;
-    //     }
-
-    //     public DrawableObject(NPC npc, float y) {
-    //         _npc = npc;
-    //         Y = y;
-    //     }
-
-    //     public void Draw(SpriteBatch spriteBatch, Matrix viewMatrix) {
-    //         if (_layer != null) {
-    //             // Draw Tiled layer
-    //             _layer.Draw(spriteBatch, viewMatrix);
-    //         } else if (_npc != null) {
-    //             // Draw NPC
-    //             _npc.Draw(spriteBatch, _npc.Font, viewMatrix);
-    //         }
-    //     }
-    // }
-
 }
