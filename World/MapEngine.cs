@@ -1,23 +1,25 @@
 using System.Collections.Generic;
-using Deltadust.Entities.Animated;
+using Deltadust.Entities;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
+using MonoGame.Extended.Tiled;
+using MonoGame.Extended.Tiled.Renderers;
 
 namespace Deltadust.World {
     public class MapEngine {
-        private readonly Tiled.TileMap _tiledMap;
-        private readonly Tiled.TileLayer _collisionLayer;
+        private readonly TiledMap _tiledMap;
+        private readonly TiledMapRenderer _tiledMapRenderer;
+        private readonly TiledMapTileLayer _collisionLayer;
         private Dictionary<Point, List<WarpPoint>> _warpPointsDictionary;
-        private readonly Dictionary<int, Texture2D> _tilesetTextures;
-
         public List<NPC> NPCs { get; private set; }
 
-        public MapEngine(Tiled.TileMap tiledMap, GraphicsDevice graphicsDevice, List<NPC> npcs) {
+        public MapEngine(TiledMap tiledMap, GraphicsDevice graphicsDevice, List<NPC> npcs) {
             _tiledMap = tiledMap;
+            _tiledMapRenderer = new TiledMapRenderer(graphicsDevice, _tiledMap);
 
             // Collision layer is named "Collisions"; need to change to something more general like Barriers
-            _collisionLayer = _tiledMap.GetTileLayer("Barriers");
+            _collisionLayer = _tiledMap.GetLayer<TiledMapTileLayer>("Barriers");
 
             #if DEBUG
             if (_collisionLayer == null) {
@@ -35,14 +37,12 @@ namespace Deltadust.World {
             NPCs = npcs;
 
         }
-        
         public void Update(GameTime gameTime) {
-            // _tiledMapRenderer.Update(gameTime);
+            _tiledMapRenderer.Update(gameTime);
         }
 
         public void Draw(SpriteBatch spriteBatch, Matrix viewMatrix) {
-            // Use the TileMap's Draw method to draw the tile layers
-            _tiledMap.Draw(spriteBatch, viewMatrix);
+            _tiledMapRenderer.Draw(viewMatrix);
         }
 
         public bool IsCollidingWithTile(Rectangle entityRectangle) {
@@ -91,41 +91,41 @@ namespace Deltadust.World {
 
         private void LoadWarpPoints()
         {
-            // _warpPointsDictionary = [];
+            _warpPointsDictionary = [];
 
-            // var objectLayer = _tiledMap.GetObjectLayer("Warp");
-            // if (objectLayer != null)
-            // {
-            //     foreach (var obj in objectLayer.Objects)
-            //     {
-            //         var warpPoint = new WarpPoint
-            //         {
-            //             Name = obj.Name,
-            //             MapName = obj.Properties["MapName"]?.ToString(),
-            //             TargetPosition = new Vector2(
-            //                 float.Parse(obj.Properties["TargetX"].ToString()),
-            //                 float.Parse(obj.Properties["TargetY"].ToString())
-            //             ),
-            //             Bounds = new Rectangle(
-            //                 (int)obj.Position.X,
-            //                 (int)obj.Position.Y - 32,
-            //                 (int)obj.Size.X,
-            //                 (int)obj.Size.Y
-            //             )
-            //         };
+            var objectLayer = _tiledMap.GetLayer<TiledMapObjectLayer>("Warp");
+            if (objectLayer != null)
+            {
+                foreach (var obj in objectLayer.Objects)
+                {
+                    var warpPoint = new WarpPoint
+                    {
+                        Name = obj.Name,
+                        MapName = obj.Properties["MapName"]?.ToString(),
+                        TargetPosition = new Vector2(
+                            float.Parse(obj.Properties["TargetX"].ToString()),
+                            float.Parse(obj.Properties["TargetY"].ToString())
+                        ),
+                        Bounds = new Rectangle(
+                            (int)obj.Position.X,
+                            (int)obj.Position.Y - 32,
+                            (int)obj.Size.Width,
+                            (int)obj.Size.Height
+                        )
+                    };
 
-            //         // Determine the top-left corner of the tile the warp point is in
-            //         var tileX = warpPoint.Bounds.X / _tiledMap.TileWidth;
-            //         var tileY = warpPoint.Bounds.Y / _tiledMap.TileHeight;
-            //         var tilePosition = new Point(tileX, tileY);
+                    // Determine the top-left corner of the tile the warp point is in
+                    var tileX = warpPoint.Bounds.X / _tiledMap.TileWidth;
+                    var tileY = warpPoint.Bounds.Y / _tiledMap.TileHeight;
+                    var tilePosition = new Point(tileX, tileY);
 
-            //         if (!_warpPointsDictionary.ContainsKey(tilePosition))
-            //         {
-            //             _warpPointsDictionary[tilePosition] = [];
-            //         }
-            //         _warpPointsDictionary[tilePosition].Add(warpPoint);
-            //     }
-            // }
+                    if (!_warpPointsDictionary.ContainsKey(tilePosition))
+                    {
+                        _warpPointsDictionary[tilePosition] = [];
+                    }
+                    _warpPointsDictionary[tilePosition].Add(warpPoint);
+                }
+            }
         }
 
         public WarpPoint CheckForWarp(Rectangle playerHitbox)
@@ -135,16 +135,17 @@ namespace Deltadust.World {
             var tileY = playerHitbox.Top / _tiledMap.TileHeight;
             var playerTilePosition = new Point(tileX, tileY);
 
-            // if (_warpPointsDictionary.TryGetValue(playerTilePosition, out var warpPoints))
-            // {
-            //     foreach (var warpPoint in warpPoints)
-            //     {
-            //         if (warpPoint.Bounds.Contains(playerHitbox))
-            //         {
-            //             return warpPoint;
-            //         }
-            //     }
-            // }
+            // Check if there is any warp point in the player's current tile
+            if (_warpPointsDictionary.TryGetValue(playerTilePosition, out var warpPoints))
+            {
+                foreach (var warpPoint in warpPoints)
+                {
+                    if (warpPoint.Bounds.Contains(playerHitbox))
+                    {
+                        return warpPoint;
+                    }
+                }
+            }
             
             return null;
         }

@@ -26,9 +26,9 @@ namespace Deltadust.Quests {
 
         public Quest()
         {
-            Rewards = [];
-            Requirements = [];
-            Objectives = [];
+            Rewards = new List<Reward>();
+            Requirements = new List<Requirement>();
+            Objectives = new List<Objective>();
             _isCompleted = false;
         }
 

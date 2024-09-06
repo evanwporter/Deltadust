@@ -1,5 +1,4 @@
 using System.Collections.Generic;
-using System.Linq;
 using System.Xml.Serialization;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
@@ -7,7 +6,7 @@ using Microsoft.Xna.Framework.Graphics;
 namespace Deltadust.Tiled
 {
     [XmlRoot("map")]
-    public class TileMap
+    public class TiledMap
     {
         [XmlAttribute("width")]
         public int Width { get; set; }
@@ -25,68 +24,25 @@ namespace Deltadust.Tiled
         public List<TiledTileSet> TileSets { get; set; }
 
         [XmlElement("layer")]
-        public List<TileLayer> TileLayerList { get; set; }
-        [XmlElement("objectgroup")]
-        public List<ObjectLayer> ObjectLayerList { get; set; }
+        public List<TileLayer> Layers { get; set; }
 
-        [XmlIgnore]
-        public Dictionary<string, TileLayer> TileLayers { get; private set; }
-        [XmlIgnore]
-        public Dictionary<string, ObjectLayer> ObjectLayers { get; private set; }
-
-        public void Load()
+        public void ParseTileLayers()
         {
-            TileLayers = new Dictionary<string, TileLayer>();
-
-            if (TileLayerList != null)
+            foreach (var layer in Layers)
             {
-                foreach (var layer in TileLayerList)
-                {
-                    if (!string.IsNullOrEmpty(layer.Name))
-                    {
-                        TileLayers[layer.Name] = layer;
-                        System.Diagnostics.Debug.WriteLine($"Loaded tile layer: {layer.Name}");
-                        layer.Load();
-                    }
-                    else
-                    {
-                        System.Diagnostics.Debug.WriteLine("Warning: Tile layer with no name found.");
-                    }
-                }
-            }
-            else
-            {
-                System.Diagnostics.Debug.WriteLine("Error: No layers found in the TMX file.");
+                layer.ParseCsvData();
             }
         }
 
-        public TileLayer GetTileLayer(string name)
+        public void Draw(SpriteBatch spriteBatch, Vector2 position)
         {
-            if (TileLayers == null || !TileLayers.ContainsKey(name))
-            {
-                System.Diagnostics.Debug.WriteLine($"Error: Tile layer '{name}' not found.");
-                return null; // Return null if the layer is missing
-            }
-            return TileLayers[name];
-        }
-
-
-        public ObjectLayer GetObjectLayer(string name)
-        {
-            ObjectLayers.TryGetValue(name, out var layer);
-            return layer;
-        }
-
-        public void Draw(SpriteBatch spriteBatch, Matrix viewMatrix)
-        {
-            foreach (var layer in TileLayers.Values)
+            foreach (var layer in Layers)
             {
                 foreach (var tileSet in TileSets)
                 {
-                    layer.Draw(spriteBatch, tileSet, viewMatrix);
+                    layer.Draw(spriteBatch, tileSet, position);
                 }
             }
         }
-
     }
 }

@@ -7,7 +7,7 @@ using MonoGame.Aseprite;
 using System;
 using Microsoft.Xna.Framework.Graphics;
 
-namespace Deltadust.Entities.Animated {
+namespace Deltadust.Entities {
     public delegate void DeathEventHandler(object sender, EventArgs e);
 
     public class NPC : AnimatedEntity {

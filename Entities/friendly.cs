@@ -6,7 +6,7 @@ using Deltadust.World;
 using Deltadust.Core;
 using Deltadust.Events;
 
-namespace Deltadust.Entities.Animated {
+namespace Deltadust.Entities {
     public class Friendly : NPC {
         private AnimatedSprite _idleAnimation;
         private AnimatedSprite _currentAnimation;

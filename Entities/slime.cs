@@ -6,7 +6,7 @@ using Microsoft.Xna.Framework.Graphics;
 
 using MonoGame.Aseprite;
 
-namespace Deltadust.Entities.Animated {
+namespace Deltadust.Entities {
     public class Slime(Vector2 startPosition, MapEngine map, ResourceManager resourceManager, CentralEventHandler eventHandler) 
         : NPC(startPosition, map, resourceManager, eventHandler) {
         protected new readonly float _speed = 50f;

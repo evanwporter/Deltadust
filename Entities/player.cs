@@ -10,7 +10,7 @@ using Microsoft.Xna.Framework.Input;
 using MonoGame.Aseprite;
 
 
-namespace Deltadust.Entities.Animated {
+namespace Deltadust.Entities {
     public class Player : AnimatedEntity
     {
         private new readonly float _speed = 100f;

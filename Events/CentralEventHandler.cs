@@ -1,6 +1,6 @@
 using System;
 
-using Deltadust.Entities.Animated;
+using Deltadust.Entities;
 using Deltadust.ItemManagement;
 
 namespace Deltadust.Events

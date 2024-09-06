@@ -1,7 +1,6 @@
 using System.Collections.Generic;
 using Deltadust.Core;
 using Deltadust.Entities;
-using Deltadust.Entities.Animated;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
