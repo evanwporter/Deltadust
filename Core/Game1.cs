@@ -125,7 +125,7 @@ namespace Deltadust.Core {
 
             _map.Draw(_spriteBatch, viewMatrix);
 
-            var entities = new List<Entity>(_npcs.Count + 1);
+            var entities = new List<AnimatedEntity>(_npcs.Count + 1);
             entities.AddRange(_npcs);
             entities.Add(_player);
 

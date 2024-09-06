@@ -7,7 +7,7 @@ using Microsoft.Xna.Framework.Graphics;
 using MonoGame.Aseprite;
 
 namespace Deltadust.Entities {
-    public abstract class Entity
+    public abstract class AnimatedEntity
     {
         protected Vector2 _position;
         protected readonly float _speed;
@@ -17,7 +17,7 @@ namespace Deltadust.Entities {
         private readonly CentralEventHandler _eventHandler;
         protected readonly int hitboxWidth = 20;
 
-        public Entity(Vector2 startPosition, MapEngine map, ResourceManager resourceManager, CentralEventHandler eventHandler)
+        public AnimatedEntity(Vector2 startPosition, MapEngine map, ResourceManager resourceManager, CentralEventHandler eventHandler)
         {
             _position = startPosition;
             _map = map;

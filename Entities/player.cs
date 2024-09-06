@@ -11,7 +11,7 @@ using MonoGame.Aseprite;
 
 
 namespace Deltadust.Entities {
-    public class Player : Entity
+    public class Player : AnimatedEntity
     {
         private new readonly float _speed = 100f;
         private AnimatedSprite _moveForwardCycle;

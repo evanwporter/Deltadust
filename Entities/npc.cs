@@ -10,7 +10,7 @@ using Microsoft.Xna.Framework.Graphics;
 namespace Deltadust.Entities {
     public delegate void DeathEventHandler(object sender, EventArgs e);
 
-    public class NPC : Entity {
+    public class NPC : AnimatedEntity {
 
         public event DeathEventHandler OnKilled;
 
