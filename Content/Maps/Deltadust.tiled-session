@@ -4,21 +4,55 @@
         "."
     ],
     "fileStates": {
+        "": {
+            "scaleInDock": 1
+        },
+        "[A]Grass_pipo.tsx": {
+            "scaleInDock": 1
+        },
+        "barrier.tsx": {
+            "scaleInDock": 1
+        },
+        "starter_island.tmx": {
+            "expandedObjectLayers": [
+                10
+            ],
+            "scale": 2,
+            "selectedLayer": 2,
+            "viewCenter": {
+                "x": 111.75,
+                "y": 304.25
+            }
+        },
+        "starter_island.tmx#WarpPanel": {
+            "scaleInDock": 1,
+            "scaleInEditor": 1
+        },
+        "starter_island.tmx#fall_beach": {
+            "scaleInDock": 1,
+            "scaleInEditor": 1
+        },
+        "starter_island.tmx#fishing house": {
+            "scaleInDock": 1
+        },
         "starter_map.tmx": {
             "scale": 1.1307065217391306,
-            "selectedLayer": 0,
+            "selectedLayer": 1,
             "viewCenter": {
-                "x": 208.27685652487384,
-                "y": 368.3537611151165
+                "x": 176.43835616438358,
+                "y": 365.7005527517424
             }
         },
         "starter_map.tmx#Desert_Oasis": {
             "scaleInDock": 1
         }
     },
+    "last.imagePath": "C:/Users/evanw/Deltadust/Content/Maps",
     "openFiles": [
     ],
     "project": "Deltadust.tiled-project",
+    "property.type": "int",
     "recentFiles": [
-    ]
+    ],
+    "tileset.embedInMap": true
 }
