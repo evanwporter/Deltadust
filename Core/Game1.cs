@@ -6,9 +6,7 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 
-using MonoGame.Extended.Tiled;
 using System.Collections.Generic;
-
 
 using Deltadust.World;
 using Deltadust.Entities;
@@ -59,8 +57,8 @@ namespace Deltadust.Core {
 
             _font = Content.Load<SpriteFont>("Fonts/ArialFont");
 
-            TiledMap tiledMap = Content.Load<TiledMap>("Maps/starter_island");
-            _map = new MapEngine(tiledMap, GraphicsDevice, _npcs);
+            Tiled.TileMap _tiledMap = Tiled.Loader.LoadMap("../../../Content/Maps/starter_island.tmx", GraphicsDevice, "../../../Content/Maps/");  // Using your custom Loader class
+            _map = new MapEngine(_tiledMap, GraphicsDevice, _npcs);
 
             _player = new Player(
                 new Vector2(300, 300), 
@@ -142,7 +140,7 @@ namespace Deltadust.Core {
 
         public void WarpToMap(string mapName, Vector2 newPlayerPosition)
         {
-            TiledMap newMap = Content.Load<TiledMap>(mapName);
+            Tiled.TileMap newMap = Tiled.Loader.LoadMap("../../../Content/Maps/starter_island.tmx", GraphicsDevice, "../../../Content/Maps/");  // Using your custom Loader class
 
             _map = new MapEngine(newMap, GraphicsDevice, _npcs);
 
