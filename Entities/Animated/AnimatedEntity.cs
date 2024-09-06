@@ -6,7 +6,7 @@ using Microsoft.Xna.Framework.Graphics;
 
 using MonoGame.Aseprite;
 
-namespace Deltadust.Entities {
+namespace Deltadust.Entities.Animated {
     public abstract class AnimatedEntity : Entity
     {
         protected Vector2 _position;
