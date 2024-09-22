@@ -1,0 +1,13 @@
+{
+    "id": 1,
+    "name": "Fetch Some Bread",
+    "description": "Some guy wants some bread, go to the town and fetch him some."
+    "requirements": [],
+    "rewards": [
+      { "type": 1, "rewardInt": 1000 }, // 100 xp
+      { "type": 6, "rewardInt": 10 } // 10 gold
+    ],
+    "objectives": [
+      { "type": 1, "objectiveInt": 102 } // item number 102 held (bread)
+    ]
+}

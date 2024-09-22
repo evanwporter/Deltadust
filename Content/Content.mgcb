@@ -21,6 +21,12 @@
 /processorParam:PremultiplyAlpha=True
 /build:Character/character.aseprite
 
+#begin Character/chrono.aseprite
+/importer:AsepriteFileContentImporter
+/processor:AsepriteFileContentProcessor
+/processorParam:PremultiplyAlpha=True
+/build:Character/chrono.aseprite
+
 #begin Character/goblin.aseprite
 /importer:AsepriteFileContentImporter
 /processor:AsepriteFileContentProcessor
@@ -46,6 +52,12 @@
 /processorParam:PremultiplyAlpha=True
 /processorParam:TextureFormat=Color
 /build:Fonts/ArialFont.png
+
+#begin Lewis_Beach.aseprite
+/importer:AsepriteFileContentImporter
+/processor:AsepriteFileContentProcessor
+/processorParam:PremultiplyAlpha=True
+/build:Lewis_Beach.aseprite
 
 #begin Maps/[A]Dirt_pipo.tsx
 /importer:TiledMapTilesetImporter
@@ -101,6 +113,11 @@
 /importer:TiledMapImporter
 /processor:TiledMapProcessor
 /build:Maps/starter_map.tmx
+
+#begin Menu/Inventory.tmx
+/importer:TiledMapImporter
+/processor:TiledMapProcessor
+/build:Menu/Inventory.tmx
 
 #begin Monsters/slime.aseprite
 /importer:AsepriteFileContentImporter

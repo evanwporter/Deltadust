@@ -1,5 +1,8 @@
 using System.Collections.Generic;
-using Deltadust.Entities;
+using Deltadust.Entities.Animated;
+using Deltadust.Entities.Animated.Monsters;
+using Deltadust.Entities.Static;
+using Deltadust.Events;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
@@ -12,14 +15,20 @@ namespace Deltadust.World {
         private readonly TiledMapRenderer _tiledMapRenderer;
         private readonly TiledMapTileLayer _collisionLayer;
         private Dictionary<Point, List<WarpPoint>> _warpPointsDictionary;
-        public List<NPC> NPCs { get; private set; }
+        public List<NPC> NPCs = [];
+        public List<TiledLayer> StaticEntities = [];
 
-        public MapEngine(TiledMap tiledMap, GraphicsDevice graphicsDevice, List<NPC> npcs) {
+        public readonly int TileWidth = 32;
+        public readonly int TileHeight = 32;
+
+        public MapEngine(TiledMap tiledMap, GraphicsDevice graphicsDevice, EventManager eventManager) {
+
             _tiledMap = tiledMap;
             _tiledMapRenderer = new TiledMapRenderer(graphicsDevice, _tiledMap);
 
             // Collision layer is named "Collisions"; need to change to something more general like Barriers
             _collisionLayer = _tiledMap.GetLayer<TiledMapTileLayer>("Barriers");
+
 
             #if DEBUG
             if (_collisionLayer == null) {
@@ -31,18 +40,56 @@ namespace Deltadust.World {
             _collisionLayer.IsVisible = false;
             #endif
 
+            InitializeStaticLayers(graphicsDevice);
+
             LoadWarpPoints();
 
-            // TODO Fully move these into MapEngine
-            NPCs = npcs;
-
         }
+
+        public void AddNPCs(EventManager eventManager)
+        {
+            var npc = new Friendly(new Vector2(400, 300), "Hello, traveler!");
+            npc.LoadContent();
+            NPCs.Add(npc);
+
+            var slime = new Monster(new Vector2(400, 200));
+            slime.LoadContent();
+            NPCs.Add(slime);
+
+            if (NPCs.Count > 0) {
+                System.Diagnostics.Debug.WriteLine($"NPC Count: {NPCs.Count}");
+            }
+            else {
+                System.Diagnostics.Debug.WriteLine("No NPCs were added.");
+            }
+        }
+
         public void Update(GameTime gameTime) {
+            foreach (var npc in NPCs) {
+                npc.Update(gameTime);
+            }
+
             _tiledMapRenderer.Update(gameTime);
         }
 
+
         public void Draw(SpriteBatch spriteBatch, Matrix viewMatrix) {
             _tiledMapRenderer.Draw(viewMatrix);
+        }
+
+        private void InitializeStaticLayers(GraphicsDevice graphicsDevice) {
+            foreach (var layer in _tiledMap.TileLayers) {
+                if (layer is TiledMapTileLayer tileLayer)
+                {
+
+                    if (tileLayer.Name == "Barriers" || tileLayer.Name == "Warp" || tileLayer.Name == "Ground")
+                        continue;
+
+                    var staticEntity = new TiledLayer(tileLayer, 220, new TiledMapRenderer(graphicsDevice, _tiledMap));
+
+                    StaticEntities.Add(staticEntity);
+                }
+            }
         }
 
         public bool IsCollidingWithTile(Rectangle entityRectangle) {
@@ -75,7 +122,6 @@ namespace Deltadust.World {
         public bool IsCollidingWithEntities(Rectangle playerHitbox) {
             foreach (var npc in NPCs) {
                 if (playerHitbox.Intersects(npc.GetHitbox(npc.Position))) {
-                    // Debugging output to check collisions with NPCs
                     System.Diagnostics.Debug.WriteLine($"Colliding with NPC: {npc.GetType().Name} at {npc.Position}");
                     return true;
                 }
@@ -149,6 +195,8 @@ namespace Deltadust.World {
             
             return null;
         }
+
+        public TiledMapTileLayer CollisionLayer => _collisionLayer;
 
 
     }

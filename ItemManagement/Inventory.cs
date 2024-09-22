@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Xml.Serialization;
@@ -11,6 +12,8 @@ namespace Deltadust.ItemManagement {
         [XmlArray("Items")]
         [XmlArrayItem("Item")]
         private List<Item> Items { get; set; }
+
+        private SpriteFont _font;
 
         public Inventory()
         {
@@ -39,10 +42,8 @@ namespace Deltadust.ItemManagement {
             if (File.Exists(filePath))
             {
                 XmlSerializer serializer = new(typeof(Inventory));
-                using (FileStream stream = new(filePath, FileMode.Open))
-                {
-                    return (Inventory)serializer.Deserialize(stream);
-                }
+                using FileStream stream = new(filePath, FileMode.Open);
+                return (Inventory)serializer.Deserialize(stream);
             }
             else
             {
@@ -50,18 +51,24 @@ namespace Deltadust.ItemManagement {
             }
         }
 
-        public void Draw(SpriteBatch spriteBatch, SpriteFont font, Matrix viewMatrix)
+        public void Draw(SpriteBatch spriteBatch, Matrix viewMatrix)
         {
             // Draw the inventory relative to the camera position (top-left corner of the screen)
             Vector2 position = Vector2.Transform(new Vector2(10, 10), Matrix.Invert(viewMatrix));
 
-            spriteBatch.DrawString(font, "Inventory:", position, Color.White);
+            spriteBatch.DrawString(_font, "Inventory:", position, Color.White);
             position.Y += 30;
 
             foreach (Item item in Items) {
-                spriteBatch.DrawString(font, item.ToString(), position, Color.White);
+                spriteBatch.DrawString(_font, item.ToString(), position, Color.White);
                 position.Y += 30;
             }
         }
+
+        internal void SetFont(SpriteFont spriteFont)
+        {
+            _font = spriteFont;
+        }
+
     }
 }

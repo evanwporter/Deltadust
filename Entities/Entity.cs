@@ -1,12 +1,9 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+using Microsoft.Xna.Framework;
 
 namespace Deltadust.Entities
 {
-    public class Entity
+    public interface IEntity : IDrawable
     {
-        
+        public Vector2 Position { get; }
     }
 }

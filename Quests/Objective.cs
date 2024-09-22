@@ -9,14 +9,14 @@ namespace Deltadust.Quests {
         public int ID {get; set;}
         public int ObjectiveInt {get; set;}
         public int Progress {get; set;}
-        public int Specifier {get; set;} // For monster quests where you need to kill a certain type, should be ID
+        public int Specifier {get; set;} // For monster quests where you need to kill a certain type, should be monster type ID
 
-        public Objective(ObjectiveType type, int objective, CentralEventHandler eventHandler) {
+        public Objective(ObjectiveType type, int objective, EventManager eventManager) {
             Type = type;
             ObjectiveInt = objective;
 
             if (Type == ObjectiveType.EnemiesKilled) {
-                eventHandler.MonsterKilled += OnKilled;
+                eventManager.MonsterKilled += OnKilled;
             }
         }
 

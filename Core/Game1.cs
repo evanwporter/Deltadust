@@ -1,19 +1,15 @@
-﻿#define DEBUG
-
-using System.IO;
+﻿// #define DEBUG
+using System.Collections.Generic;
 
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+using Microsoft.Xna.Framework.Content;
 
-using MonoGame.Extended.Tiled;
-using System.Collections.Generic;
-
-
-using Deltadust.World;
-using Deltadust.Entities;
+using Deltadust.Core.GameStates;
+using Deltadust.Core.Input;
 using Deltadust.Events;
-using Deltadust.Quests;
+using Deltadust.World;
 
 
 namespace Deltadust.Core {
@@ -21,135 +17,129 @@ namespace Deltadust.Core {
         private GraphicsDeviceManager _graphics;
         private SpriteBatch _spriteBatch;
 
-        private Camera _camera;
         private SpriteFont _font;
+        // private WorldEngine _world;
+        // private GameState _currentState;
 
-        private Player _player;
-        private List<NPC> _npcs;
+        private LinkedList<GameState> _states;
+        private readonly EventManager _eventManager;
 
-        private ResourceManager _resourceManager;
+        private static Game1 _instance;
+        private WorldEngine _world;
 
-        private QuestManager _questManager;
-
-        private MapEngine _map;
-
-        private CentralEventHandler _eventHandler;
-
-        public Game1() {
+        private Game1() {
             _graphics = new GraphicsDeviceManager(this);
             Content.RootDirectory = "Content";
             IsMouseVisible = true;
             Window.AllowUserResizing = true;
+            _eventManager = new EventManager();
+        }
+
+        public static Game1 Instance
+        {
+            get
+            {
+                if (_instance == null)
+                {
+                    _instance = new Game1();
+                }
+                return _instance;
+            }
         }
 
         protected override void Initialize() {
-            _camera = new Camera(GraphicsDevice.Viewport);
-            _resourceManager = new ResourceManager(Content, GraphicsDevice);
-            _questManager = new QuestManager();
-            _eventHandler = new CentralEventHandler();
+            _states = new LinkedList<GameState>();
+            InputManager.Initialize();
+
+            PushState(new MainMenuState());
+
+            _eventManager.OnDialogueTriggered += HandleDialogueTriggered;
 
             base.Initialize();
         }
 
         protected override void LoadContent() {
 
-            _npcs = [];
-
             _spriteBatch = new SpriteBatch(GraphicsDevice);
 
+            // _world.LoadContent();
+
             _font = Content.Load<SpriteFont>("Fonts/ArialFont");
-
-            TiledMap tiledMap = Content.Load<TiledMap>("Maps/starter_island");
-            _map = new MapEngine(tiledMap, GraphicsDevice, _npcs);
-
-            _player = new Player(
-                new Vector2(300, 300), 
-                Path.Combine(Content.RootDirectory, "inventory.xml"),
-                _map,
-                _resourceManager,
-                _eventHandler
-            );
-
-            _player.LoadContent();
-
-            Slime _slimeMonster = new Slime(new Vector2(200, 200), _map, _resourceManager, _eventHandler);
-            _slimeMonster.LoadContent();
-
-            Friendly _npc = new Friendly(new Vector2(400, 300), "Hello, traveler!", _map, _resourceManager, _eventHandler);
-            _npc.LoadContent();
-
-            _npcs.Add(_npc);
-            _npcs.Add(_slimeMonster);
 
         }
 
         protected override void Update(GameTime gameTime) {
-            if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
+            InputManager.Update();
+
+            if (InputManager.IsKeyPressed(Keys.Escape))
+            {
                 Exit();
-
-            _player.Update(gameTime);
-
-            if (!IsPaused()) {
-                foreach (var npc in _npcs) {
-                    npc.Update(gameTime);
-                }
             }
 
-            var warpPoint = _map.CheckForWarp(_player.GetHitbox(_player.Position));
-            if (warpPoint != null) {
-                WarpToMap(warpPoint.MapName, warpPoint.TargetPosition);
+            if (_states.Count > 0) {
+                _states.Last.Value.Update(gameTime);
             }
 
-            // Update the camera position to follow the player
-            _camera.Position = _player.Position - new Vector2(GraphicsDevice.Viewport.Width / 2, GraphicsDevice.Viewport.Height / 2) / _camera.Zoom;
-
-            _map.Update(gameTime);
+            // _world.Update(gameTime);
 
             base.Update(gameTime);
         }
 
-        public bool IsPaused() {
-            if (_player.InventoryOpen) {
-                return true;
-            }
-            return false;
-        }
-
         protected override void Draw(GameTime gameTime) {
+
             GraphicsDevice.Clear(Color.CornflowerBlue);
 
-            // Apply camera transformation
-            Matrix viewMatrix = _camera.GetViewMatrix();
-
-            _spriteBatch.Begin(transformMatrix: viewMatrix, samplerState: SamplerState.PointClamp);
-
-            _map.Draw(_spriteBatch, viewMatrix);
-
-            var entities = new List<AnimatedEntity>(_npcs.Count + 1);
-            entities.AddRange(_npcs);
-            entities.Add(_player);
-
-            entities.Sort((a, b) => a.Position.Y.CompareTo(b.Position.Y));
-
-            foreach (var entity in entities) {
-                entity.Draw(_spriteBatch, _font, viewMatrix);
+            foreach (var state in _states) {
+                state.Draw(gameTime, _spriteBatch);
             }
 
-            _spriteBatch.End();
+            // _world.Draw(gameTime, _spriteBatch, _font);
 
             base.Draw(gameTime);
         }
 
-        public void WarpToMap(string mapName, Vector2 newPlayerPosition)
+        public static void PushState(GameState state) {
+            Instance._states.AddLast(state);
+            state.Initialize();
+            state.LoadContent();
+        }
+
+        public static void PopState() {
+            if (Instance._states.Count > 0)
+            {
+                var state = Instance._states.Last.Value;
+                state.UnloadContent();
+                Instance._states.RemoveLast(); // Remove the last element (top of stack)
+            }
+        }
+
+        public static void ChangeState(GameState state) {
+            PopState();
+            PushState(state);
+        }
+
+        private void HandleDialogueTriggered(object sender, DialogueEventArgs e)
         {
-            TiledMap newMap = Content.Load<TiledMap>(mapName);
+            PushState(new DialogueState(e.DialogueText));
+        }
 
-            _map = new MapEngine(newMap, GraphicsDevice, _npcs);
+        public static EventManager GetEventManager() => Instance._eventManager;
 
-            _player.SetPosition(newPlayerPosition);
-            _camera.Position = _player.Position - new Vector2(GraphicsDevice.Viewport.Width / 2, GraphicsDevice.Viewport.Height / 2) / _camera.Zoom;
+        public static GraphicsDeviceManager GetGraphics() => Instance._graphics;
 
-            System.Diagnostics.Debug.WriteLine($"Warping to {mapName} at position {newPlayerPosition}");
+        public static SpriteFont Font => Instance._font;
+
+        public static ContentManager GetContent() => Instance.Content;
+
+        public static WorldEngine GetWorld() => Instance._world;
+
+        public static GraphicsDevice GetGraphicsDevice() => Instance.GraphicsDevice;
+
+        public static void SetWorld(WorldEngine world) => Instance._world = world;
+
+        public static void ExitGame()
+        {
+            Game1.Instance.Exit();
         }
     }
 }
