@@ -1,0 +1,127 @@
+
+#----------------------------- Global Properties ----------------------------#
+
+/outputDir:bin/$(Platform)
+/intermediateDir:obj/$(Platform)
+/platform:DesktopGL
+/config:
+/profile:Reach
+/compress:False
+
+#-------------------------------- References --------------------------------#
+
+/reference:..\pipeline-references\MonoGame.Extended.Content.Pipeline.dll
+/reference:..\..\.nuget\packages\monogame.aseprite\6.0.7\content\Monogame.Aseprite.Content.Pipeline.dll
+
+#---------------------------------- Content ---------------------------------#
+
+#begin Character/character.aseprite
+/importer:AsepriteFileContentImporter
+/processor:AsepriteFileContentProcessor
+/processorParam:PremultiplyAlpha=True
+/build:Character/character.aseprite
+
+#begin Character/chrono.aseprite
+/importer:AsepriteFileContentImporter
+/processor:AsepriteFileContentProcessor
+/processorParam:PremultiplyAlpha=True
+/build:Character/chrono.aseprite
+
+#begin Character/goblin.aseprite
+/importer:AsepriteFileContentImporter
+/processor:AsepriteFileContentProcessor
+/processorParam:PremultiplyAlpha=True
+/build:Character/goblin.aseprite
+
+#begin Character/Lewis_Beach.aseprite
+/importer:AsepriteFileContentImporter
+/processor:AsepriteFileContentProcessor
+/processorParam:PremultiplyAlpha=True
+/build:Character/Lewis_Beach.aseprite
+
+#begin Character/swipe.aseprite
+/importer:AsepriteFileContentImporter
+/processor:AsepriteFileContentProcessor
+/processorParam:PremultiplyAlpha=True
+/build:Character/swipe.aseprite
+
+#begin Fonts/ArialFont.png
+/importer:TextureImporter
+/processor:FontTextureProcessor
+/processorParam:FirstCharacter= 
+/processorParam:PremultiplyAlpha=True
+/processorParam:TextureFormat=Color
+/build:Fonts/ArialFont.png
+
+#begin Lewis_Beach.aseprite
+/importer:AsepriteFileContentImporter
+/processor:AsepriteFileContentProcessor
+/processorParam:PremultiplyAlpha=True
+/build:Lewis_Beach.aseprite
+
+#begin Maps/[A]Dirt_pipo.tsx
+/importer:TiledMapTilesetImporter
+/processor:TiledMapTilesetProcessor
+/build:Maps/[A]Dirt_pipo.tsx
+
+#begin Maps/[A]Flower_pipo.tsx
+/importer:TiledMapTilesetImporter
+/processor:TiledMapTilesetProcessor
+/build:Maps/[A]Flower_pipo.tsx
+
+#begin Maps/[A]Grass_pipo.tsx
+/importer:TiledMapTilesetImporter
+/processor:TiledMapTilesetProcessor
+/build:Maps/[A]Grass_pipo.tsx
+
+#begin Maps/[A]Wall-Up_pipo.tsx
+/importer:TiledMapTilesetImporter
+/processor:TiledMapTilesetProcessor
+/build:Maps/[A]Wall-Up_pipo.tsx
+
+#begin Maps/[A]Water_pipo.tsx
+/importer:TiledMapTilesetImporter
+/processor:TiledMapTilesetProcessor
+/build:Maps/[A]Water_pipo.tsx
+
+#begin Maps/[A]WaterFall_pipo.tsx
+/importer:TiledMapTilesetImporter
+/processor:TiledMapTilesetProcessor
+/build:Maps/[A]WaterFall_pipo.tsx
+
+#begin Maps/[Base]BaseChip_pipo.tsx
+/importer:TiledMapTilesetImporter
+/processor:TiledMapTilesetProcessor
+/build:Maps/[Base]BaseChip_pipo.tsx
+
+#begin Maps/LightShadow_pipo.tsx
+/importer:TiledMapTilesetImporter
+/processor:TiledMapTilesetProcessor
+/build:Maps/LightShadow_pipo.tsx
+
+#begin Maps/samplemap.tmx
+/importer:TiledMapImporter
+/processor:TiledMapProcessor
+/build:Maps/samplemap.tmx
+
+#begin Maps/starter_island.tmx
+/importer:TiledMapImporter
+/processor:TiledMapProcessor
+/build:Maps/starter_island.tmx
+
+#begin Maps/starter_map.tmx
+/importer:TiledMapImporter
+/processor:TiledMapProcessor
+/build:Maps/starter_map.tmx
+
+#begin Menu/Inventory.tmx
+/importer:TiledMapImporter
+/processor:TiledMapProcessor
+/build:Menu/Inventory.tmx
+
+#begin Monsters/slime.aseprite
+/importer:AsepriteFileContentImporter
+/processor:AsepriteFileContentProcessor
+/processorParam:PremultiplyAlpha=True
+/build:Monsters/slime.aseprite
+

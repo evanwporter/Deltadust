@@ -1,0 +1,42 @@
+{
+    "Maps": [
+        {
+            "MapName": "starter_island",
+            "NPCs": [
+                {
+                    "Type": "NPC",
+                    "Name": "Villager",
+                    "Position": { "X": 400, "Y": 300 },
+                    "Dialogue": "Welcome to our village!"
+                }
+            ],
+            "Monsters": [
+                {
+                    "Type": "Slime",
+                    "Name": "Green Slime",
+                    "Position": { "X": 200, "Y": 200 },
+                    "Speed": 25.0
+                }
+            ]
+        },
+        {
+            "MapName": "forest",
+            "NPCs": [
+                {
+                    "Type": "NPC",
+                    "Name": "Old Hermit",
+                    "Position": { "X": 500, "Y": 350 },
+                    "Dialogue": "The forest is dangerous!"
+                }
+            ],
+            "Monsters": [
+                {
+                    "Type": "Slime",
+                    "Name": "Blue Slime",
+                    "Position": { "X": 300, "Y": 250 },
+                    "Speed": 30.0
+                }
+            ]
+        }
+    ]
+}

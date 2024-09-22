@@ -1,0 +1,83 @@
+{
+    "Map/SizeTest": {
+        "height": 4300,
+        "width": 2
+    },
+    "activeFile": "starter_island.tmx",
+    "expandedProjectPaths": [
+    ],
+    "file.lastUsedOpenFilter": "All Files (*)",
+    "fileStates": {
+        "C:/Users/evanw/Deltadust/Content/Menu/Inventory.tmx": {
+            "scale": 0.75,
+            "selectedLayer": 1,
+            "viewCenter": {
+                "x": 267.33333333333337,
+                "y": -166
+            }
+        },
+        "C:/Users/evanw/Deltadust/Content/Menu/Inventory.tsx": {
+            "scaleInDock": 1,
+            "scaleInEditor": 1
+        },
+        "C:/Users/evanw/Deltadust/Content/Menu/MenuTiles.tsx": {
+            "scaleInDock": 1,
+            "scaleInEditor": 1
+        },
+        "WarpPanel.tsx": {
+            "scaleInDock": 1
+        },
+        "[A]Grass_pipo.tsx": {
+            "scaleInDock": 1
+        },
+        "barrier.tsx": {
+            "scaleInDock": 1
+        },
+        "inventory.tmx": {
+            "scale": 1.32109375,
+            "selectedLayer": 0,
+            "viewCenter": {
+                "x": 351.98107628622114,
+                "y": 96.1324659964518
+            }
+        },
+        "starter_island.tmx": {
+            "scale": 3,
+            "selectedLayer": 2,
+            "viewCenter": {
+                "x": 139.16666666666663,
+                "y": 314.5
+            }
+        },
+        "starter_island.tmx#fishing house": {
+            "scaleInDock": 1
+        },
+        "starter_map.tmx": {
+            "scale": 1,
+            "selectedLayer": 0,
+            "viewCenter": {
+                "x": 214.5,
+                "y": 377.5
+            }
+        },
+        "starter_map.tmx#Desert_Oasis": {
+            "scaleInDock": 1
+        }
+    },
+    "last.imagePath": "C:/Users/evanw/Deltadust/Content/Menu",
+    "map.lastUsedFormat": "tmx",
+    "openFiles": [
+        "starter_island.tmx",
+        "starter_map.tmx"
+    ],
+    "project": "",
+    "recentFiles": [
+        "starter_map.tmx",
+        "starter_island.tmx",
+        "C:/Users/evanw/Deltadust/Content/Menu/Inventory.tsx",
+        "C:/Users/evanw/Deltadust/Content/Menu/MenuTiles.tsx",
+        "C:/Users/evanw/Deltadust/Content/Menu/Inventory.tmx",
+        "inventory.tmx"
+    ],
+    "tileset.lastUsedFormat": "tsx"
+}
